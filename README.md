@@ -6,6 +6,8 @@ MathematicaMVA is a Mathematica package implementing mean-value analysis (MVA) f
 - Install it as described on [support.wolfram.com/kb/5648](http://support.wolfram.com/kb/5648).
 
 ## Usage
+:information_source: For a version of this README with interactive examples open the [README.nb](https://github.com/meteoorkip/MathematicaMVA/raw/master/README.nb "Right click->save as...") file in Mathematica.
+
 + [1. Basics](#1-basics)
     - [1.1 Load the package](#11-load-the-package)
     - [1.2 Creating a queueing network](#12-creating-a-queueing-network)
@@ -216,7 +218,7 @@ The expected response time per passage is calculated using the following formula
 
 The expected response time per passage can be calculated using the `ExpectedResponseTimePerPassage` function. The `ExpectedResponseTimePerPassage` function requires a queueing network and the total number of customers as arguments and yields a list of expected response times per passage. An index argument can be added to calculate the expected response time per passage of a single station.
 
-##### 3.5.1 Examples
+##### 3.6.1 Examples
 ```Mathematica
 In[1]  = ExpectedResponseTimePerPassage[network, 1]
 Out[1] = {10, 45, 16, 24}
@@ -359,7 +361,7 @@ Out[4] = d2/(d1 + d2 + d3)
 In[5]  = ExpectedResponseTimePerPassageFCFSAndISFormula[network, 1]
 Out[5] = {10, 45, 16, 24}
 
-In[6]  = ExpectedResponseTimePerPassageFCFSAndISFormula[exampleNetwork, 1, 2]
+In[6]  = ExpectedResponseTimePerPassageFCFSAndISFormula[variableNetwork, 1, 2]
 Out[6] = -((r32 s2)/(-1 + r22))
 
 In[7]  = ExpectedResponseTimePerPassageFCFSAndISFormula[{10, 15}, {IS, FCFS}, 4]

@@ -1,0 +1,3198 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    114064,       3190]
+NotebookOptionsPosition[     93023,       2809]
+NotebookOutlinePosition[     93438,       2826]
+CellTagsIndexPosition[     93395,       2823]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["MathematicaMVA", "Title",
+ CellChangeTimes->{{3.757662620915738*^9, 
+  3.757662625401764*^9}},ExpressionUUID->"ce5b3bf1-c552-47cf-a5cd-\
+6c8faf50ffea"],
+
+Cell["\<\
+MathematicaMVA is a Mathematica package implementing mean-value analysis \
+(MVA) for closed queueing networks in Mathematica. It has been used for \
+researching alternative MVA formulas which also have been implemented in the \
+package.\
+\>", "Text",
+ CellChangeTimes->{{3.7576626430167537`*^9, 3.757662645666746*^9}, {
+  3.7577427823263903`*^9, 3.757742782717029*^9}, {3.7577428230920906`*^9, 
+  3.7577428233889284`*^9}},ExpressionUUID->"73a482f4-496e-43c9-acfd-\
+650d9040a5e0"],
+
+Cell[CellGroupData[{
+
+Cell["Installation", "Chapter",
+ CellChangeTimes->{{3.75766265750373*^9, 
+  3.757662659688751*^9}},ExpressionUUID->"8f9d8eaf-9ada-495c-a4dd-\
+bd331610dd45"],
+
+Cell[TextData[{
+ "\[Bullet] Download the ",
+ Cell[BoxData[
+  TemplateBox[{
+   "\"QueueingNetworks.wl\"",
+    "https://github.com/meteoorkip/MathematicaMVA/raw/master/QueueingNetworks.\
+wl"},
+   "HyperlinkURL"]],
+  CellChangeTimes->{{3.7576629072087297`*^9, 3.7576629268517303`*^9}},
+  ExpressionUUID->"26c0e039-98ba-41b6-beda-528374321763"],
+ " file.\n\[Bullet] Install it as described on ",
+ Cell[BoxData[
+  TemplateBox[{
+   "\"support.wolfram.com/kb/5648\"","http://support.wolfram.com/kb/5648"},
+   "HyperlinkURL"]],
+  CellChangeTimes->{{3.7576629072087297`*^9, 3.7576629268517303`*^9}, 
+    3.7576629914267373`*^9},ExpressionUUID->
+  "eafea34b-8819-4d9f-a753-88aadcdf097b"],
+ "."
+}], "Text",
+ CellChangeTimes->{
+  3.7576626821697383`*^9, 3.757662740286748*^9, {3.7576627883167295`*^9, 
+   3.7576627883187304`*^9}, {3.7576629322527432`*^9, 
+   3.7576629550327444`*^9}, {3.7576630017427635`*^9, 3.757663001821741*^9}, {
+   3.7576630824067893`*^9, 3.7576630827627897`*^9}, {3.757663168817772*^9, 
+   3.757663215359769*^9}},ExpressionUUID->"c6ea3538-ca8b-470e-bb2f-\
+c218cd75d7a2"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Usage", "Chapter",
+ CellChangeTimes->{{3.7576632301447663`*^9, 
+  3.7576632312207413`*^9}},ExpressionUUID->"584a788e-4e48-474b-8fe0-\
+a85cee074097"],
+
+Cell[CellGroupData[{
+
+Cell["1. Basics", "Section",
+ CellChangeTimes->{{3.7576634696527915`*^9, 
+  3.7576635023227882`*^9}},ExpressionUUID->"290d8b86-561b-425d-9505-\
+3baeb59a71d7"],
+
+Cell[CellGroupData[{
+
+Cell["1.1 Load the package", "Subsection",
+ CellChangeTimes->{{3.7576635078387656`*^9, 
+  3.7576635129237456`*^9}},ExpressionUUID->"dd950bf4-a8e6-436c-9e77-\
+a965fb765dd1"],
+
+Cell["Load the package by using:", "Text",
+ CellChangeTimes->{{3.757663518485795*^9, 
+  3.757663523279789*^9}},ExpressionUUID->"33c7e0c8-4fca-40b1-9f97-\
+e6ad003f335d"],
+
+Cell[BoxData[
+ RowBox[{"<<", "QueueingNetworks`"}]], "Input",
+ CellChangeTimes->{{3.757663525605736*^9, 3.757663530900271*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"e472b248-ff89-4b33-8b5c-9e3574451ac2"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["1.2 Creating a queueing network", "Subsection",
+ CellChangeTimes->{{3.757663537707324*^9, 
+  3.757663549141341*^9}},ExpressionUUID->"8b0a4904-c4b3-4ad8-a6b7-\
+3e56adda4bdd"],
+
+Cell[TextData[{
+ "A queueing network can be created using the ",
+ StyleBox["QueueingNetwork", "Input"],
+ " function. The ",
+ StyleBox["QueueingNetwork", "Input"],
+ " function requires a list of stations and a list of routes as arguments.\n\n\
+Stations are represented as a tuple of scheduling and service time. The \
+scheduling can be either ",
+ StyleBox["FCFS", "Input"],
+ " or ",
+ StyleBox["IS", "Input"],
+ ". The service time can be a number or a variable. An FCFS station with \
+service time ",
+ StyleBox["s1", "Input"],
+ " would be represented as ",
+ StyleBox["{FCFS,s1}", "Input"],
+ ".\n\nRoutes are represented as a tuple of the route itself and the routing \
+probability. The route itself is a ",
+ StyleBox["Rule(\[Rule])", "Input"],
+ ", ",
+ StyleBox["TwoWayRule(\[LeftRightArrow])", "Input"],
+ ", ",
+ StyleBox["DirectedEdge(\[DirectedEdge])", "Input"],
+ " or a ",
+ StyleBox["UndirectedEdge(\[UndirectedEdge])", "Input"],
+ " between two station indices (starting from 1). The routing probability can \
+be a number or a variable. A route from station 1 to station 2 with routing \
+probability ",
+ StyleBox["r12", "Input"],
+ " would be represented as ",
+ StyleBox["{1\[Rule]2,r12}", "Input"],
+ ".\n\nAn example queueing network would be:"
+}], "Text",
+ CellChangeTimes->{
+  3.7576635788122764`*^9, {3.7576636223972664`*^9, 3.7576636296403265`*^9}, {
+   3.7576636640902343`*^9, 3.7576636658912153`*^9}, {3.757663697008192*^9, 
+   3.757663789581222*^9}, {3.7576638287581863`*^9, 
+   3.7576639716422086`*^9}},ExpressionUUID->"104e9bbc-e22e-4b5c-83a2-\
+c1ad31079ef0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"network", "=", 
+  RowBox[{"QueueingNetwork", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "10"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"IS", ",", "100"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "20"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "120"}], "}"}]}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"1", "\[Rule]", "3"}], ",", 
+        RowBox[{"4", "/", "5"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"1", "\[Rule]", "4"}], ",", 
+        RowBox[{"1", "/", "5"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"2", "\[Rule]", "1"}], ",", "1"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"3", "\[Rule]", "1"}], ",", 
+        RowBox[{"1", "/", "2"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"3", "\[Rule]", "2"}], ",", 
+        RowBox[{"1", "/", "2"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"4", "\[Rule]", "1"}], ",", 
+        RowBox[{"3", "/", "4"}]}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"4", "\[Rule]", "2"}], ",", 
+        RowBox[{"1", "/", "4"}]}], "}"}]}], "}"}]}], "\[IndentingNewLine]", 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.75766398754919*^9, 3.757663995341179*^9}},
+ CellLabel->"In[5]:=",ExpressionUUID->"56c4ee0b-6ef8-463c-886b-08152449f81e"],
+
+Cell[BoxData[
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{1, 2, 3, 
+      4}, {{{1, 3}, {1, 4}, {2, 1}, {3, 1}, {3, 2}, {4, 1}, {4, 2}}, Null}, {
+      Properties -> {
+        2 -> {Private`scheduling -> $CellContext`IS}, 
+         1 -> {Private`scheduling -> $CellContext`FCFS}, 
+         3 -> {Private`scheduling -> $CellContext`FCFS}, 
+         4 -> {Private`scheduling -> $CellContext`FCFS}}, 
+       EdgeLabels -> {"EdgeWeight"}, VertexLabels -> {"VertexWeight"}, 
+       VertexWeight -> {10, 100, 20, 120}, EdgeWeight -> {
+         Rational[4, 5], 
+         Rational[1, 5], 1, 
+         Rational[1, 2], 
+         Rational[1, 2], 
+         Rational[3, 4], 
+         Rational[1, 4]}}]]}, 
+    TagBox[GraphicsGroupBox[{
+       {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[
+        Medium], {
+         ArrowBox[BezierCurveBox[{{0.925819161042169, 0.862041121718063}, {
+          0.5337403843783629, 0.494429954262263}, {0., 
+          0.43130357600257335`}}], 0.021396148693551637`], InsetBox[
+          FractionBox["4", "5"], {0.49306120872116865, 0.5818650075873663}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[BezierCurveBox[{{0.925819161042169, 0.862041121718063}, {
+          1.4595340246398143`, 0.7989847132950734}, {1.85163379387626, 
+          0.4314450049189128}}], 0.021396148693551637`], InsetBox[
+          FractionBox["1", "5"], {1.418868205635155, 0.7115500876168745}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[{{0.9261228188837752, 0.}, {0.925819161042169, 
+          0.862041121718063}}, 0.021396148693551637`], 
+         InsetBox["1", {0.9259709899629721, 0.4310205608590315}, ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[BezierCurveBox[{{0., 0.43130357600257335`}, {
+          0.3920787766638067, 0.7989147434583171}, {0.925819161042169, 
+          0.862041121718063}}], 0.021396148693551637`], InsetBox[
+          FractionBox["1", "2"], {0.4327579523210002, 0.7114796901332701}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[{{0., 0.43130357600257335`}, {0.9261228188837752, 0.}}, 
+          0.021396148693551637`], InsetBox[
+          FractionBox["1", "2"], {0.4630614094418876, 0.21565178800128668}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[BezierCurveBox[{{1.85163379387626, 0.4314450049189128}, {
+          1.317918930278615, 0.49450141334248926`}, {0.925819161042169, 
+          0.862041121718063}}], 0.021396148693551637`], InsetBox[
+          FractionBox["3", "4"], {1.358584749283274, 0.5819360390201018}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[{{1.85163379387626, 0.4314450049189128}, {
+          0.9261228188837752, 0.}}, 0.021396148693551637`], InsetBox[
+          FractionBox["1", "4"], {1.3888783063800176, 0.2157225024594564}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}}, 
+       {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[
+        0.7]}], {
+         DiskBox[{0.925819161042169, 0.862041121718063}, 
+          0.021396148693551637], 
+         InsetBox["10", 
+          Offset[{2, 2}, {0.9472153097357207, 0.8834372704116147}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.9261228188837752, 0.}, 0.021396148693551637], 
+         InsetBox["100", 
+          Offset[{2, 2}, {0.9475189675773269, 0.021396148693551637}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0., 0.43130357600257335}, 0.021396148693551637], 
+         InsetBox["20", 
+          Offset[{2, 2}, {0.021396148693551637, 0.45269972469612496}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.85163379387626, 0.4314450049189128}, 
+          0.021396148693551637], 
+         InsetBox["120", 
+          Offset[{2, 2}, {1.8730299425698116, 0.45284115361246446}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}}}],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->{
+   "NetworkGraphics", FrontEnd`GraphicsHighlightColor -> Hue[0.8, 1., 0.6]},
+  FormatType->TraditionalForm,
+  FrameTicks->None]], "Output",
+ CellChangeTimes->{3.7576639994221745`*^9},
+ CellLabel->"Out[5]=",ExpressionUUID->"c18fec9c-caad-4ad0-8a62-25e4ceb59fb9"]
+}, Open  ]],
+
+Cell["\<\
+We will continue to use this queueing network in the examples.\
+\>", "Text",
+ CellChangeTimes->{{3.7576654945506783`*^9, 
+  3.7576654990156775`*^9}},ExpressionUUID->"4cd9d8d9-256d-49c8-9428-\
+9b5b160ddcef"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2. Retrieving values", "Section",
+ CellChangeTimes->{{3.7576663478621283`*^9, 
+  3.7576663782050853`*^9}},ExpressionUUID->"6a487448-3618-407d-8a6e-\
+55dca9b728b6"],
+
+Cell[CellGroupData[{
+
+Cell["2.1 Retrieving thee station scheduling", "Subsection",
+ CellChangeTimes->{{3.757666445321102*^9, 
+  3.7576664548430805`*^9}},ExpressionUUID->"9f04e953-e700-4c05-8cd0-\
+b3e7d4ebc852"],
+
+Cell[TextData[{
+ "The station scheduling can be retrieved by using the ",
+ StyleBox["Scheduling", "Input"],
+ " function. The ",
+ StyleBox["Scheduling", "Input"],
+ " function requires a queueing network as argument and gives a list of \
+schedules. An index argument can be added to retrieve the scheduling of a \
+single station."
+}], "Text",
+ CellChangeTimes->{{3.7576666312810917`*^9, 
+  3.757666643754086*^9}},ExpressionUUID->"5b718144-0f7b-4ae4-8e77-\
+77f529177011"],
+
+Cell[CellGroupData[{
+
+Cell["2.1.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.757666661838075*^9, 
+  3.757666664875124*^9}},ExpressionUUID->"46907f4a-fb61-42c3-bb85-\
+e3dc07779c3c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Scheduling", "[", "network", "]"}]], "Input",
+ CellChangeTimes->{{3.7576666798260856`*^9, 3.7576666900810747`*^9}},
+ CellLabel->"In[6]:=",ExpressionUUID->"d59048bb-80ff-4e1e-b10a-d440c8dca040"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"FCFS", ",", "IS", ",", "FCFS", ",", "FCFS"}], "}"}]], "Output",
+ CellChangeTimes->{3.7576666930530634`*^9},
+ CellLabel->"Out[6]=",ExpressionUUID->"852a4f61-4162-4be1-817d-982f6c402807"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Scheduling", "[", 
+  RowBox[{"network", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757666696470086*^9, 3.7576667050900764`*^9}},
+ CellLabel->"In[7]:=",ExpressionUUID->"4c4d836a-5ee7-4615-82c0-af5b1cea6179"],
+
+Cell[BoxData["IS"], "Output",
+ CellChangeTimes->{3.7576667056990633`*^9},
+ CellLabel->"Out[7]=",ExpressionUUID->"34d78698-f3db-4e2a-bd5f-2ac6f8af1e95"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2.2 Retrieve the service times", "Subsection",
+ CellChangeTimes->{{3.7576667227581224`*^9, 
+  3.7576667432460775`*^9}},ExpressionUUID->"e076a3c2-7a2c-4cff-a0ee-\
+fddcb60d11c8"],
+
+Cell[TextData[{
+ "The service times can be retrieved using the ",
+ StyleBox["ServiceTime", "Input"],
+ " function. The ",
+ StyleBox["ServiceTime", "Input"],
+ " function requires a queueing network as argument and gives a list of \
+service times. An index argument can be added to retrieve the service time of \
+a single station."
+}], "Text",
+ CellChangeTimes->{{3.7576667560150833`*^9, 
+  3.757666768268079*^9}},ExpressionUUID->"6f8cdf32-a897-49bb-af2b-\
+1e57a5682cac"],
+
+Cell[CellGroupData[{
+
+Cell["2.2.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.757666781716123*^9, 
+  3.757666786457082*^9}},ExpressionUUID->"e3e23fb0-4b76-4d0b-8c1e-\
+92e0b263dcc1"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ServiceTime", "[", "network", "]"}]], "Input",
+ CellChangeTimes->{{3.757666790909086*^9, 3.7576667958170805`*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"5003b6a5-f8a5-42e5-926b-9e8072a94f06"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"10", ",", "100", ",", "20", ",", "120"}], "}"}]], "Output",
+ CellChangeTimes->{3.757666796381064*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"33541ac4-f22e-447d-85a0-3adbc4dc0b4b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ServiceTime", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757666798607075*^9, 3.757666806464085*^9}},
+ CellLabel->"In[9]:=",ExpressionUUID->"a33ce553-ff0a-47ee-b5f6-6b203f9f7f29"],
+
+Cell[BoxData["10"], "Output",
+ CellChangeTimes->{3.7576668070690727`*^9},
+ CellLabel->"Out[9]=",ExpressionUUID->"c8de7c11-c2b1-4c79-b285-60f2f0b11e45"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2.3 Retrieve the routing probabilities", "Subsection",
+ CellChangeTimes->{{3.757666826234099*^9, 
+  3.757666844563116*^9}},ExpressionUUID->"8560b7bb-2d77-4dd8-963b-\
+20d1e27dbfe1"],
+
+Cell[TextData[{
+ "The routing probabilities can be retrieved using the ",
+ StyleBox["RoutingProbability", "Input"],
+ " function. The ",
+ StyleBox["RoutingProbability", "Input"],
+ " function requires a queueing network as argument and gives a matrix of \
+routing probabilities. An index argument can be added to retrieve a list of \
+routing probabilities originating from a single station. Another index \
+argument can be added to retrieve the routing probability of a single route."
+}], "Text",
+ CellChangeTimes->{{3.757666857388077*^9, 
+  3.7576668670640755`*^9}},ExpressionUUID->"f2131b89-a440-4d35-934d-\
+ced4ca7aa9bc"],
+
+Cell[CellGroupData[{
+
+Cell["2.3.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576668804051223`*^9, 
+  3.757666884190078*^9}},ExpressionUUID->"64d3e0d3-4a87-4a0f-aa99-\
+f2bf4717057b"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RoutingProbability", "[", "network", "]"}]], "Input",
+ CellChangeTimes->{{3.7576668945640793`*^9, 3.7576668982200794`*^9}},
+ CellLabel->"In[12]:=",ExpressionUUID->"84ba7867-f0ab-4340-a8ed-f8000992a289"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0", ",", 
+     FractionBox["4", "5"], ",", 
+     FractionBox["1", "5"]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "0", ",", "0", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     FractionBox["1", "2"], ",", 
+     FractionBox["1", "2"], ",", "0", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     FractionBox["3", "4"], ",", 
+     FractionBox["1", "4"], ",", "0", ",", "0"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.757666899236066*^9, 3.7576669334830775`*^9},
+ CellLabel->"Out[12]=",ExpressionUUID->"9895cae3-60ec-473c-895e-b8d13532c61d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MatrixForm", "[", "%", "]"}]], "Input",
+ CellChangeTimes->{{3.7576669343760805`*^9, 3.757666938223077*^9}},
+ CellLabel->"In[13]:=",ExpressionUUID->"487c457c-c88d-43df-88e4-9c8783b868d5"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {"0", "0", 
+      FractionBox["4", "5"], 
+      FractionBox["1", "5"]},
+     {"1", "0", "0", "0"},
+     {
+      FractionBox["1", "2"], 
+      FractionBox["1", "2"], "0", "0"},
+     {
+      FractionBox["3", "4"], 
+      FractionBox["1", "4"], "0", "0"}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{3.7576669388100653`*^9},
+ CellLabel->
+  "Out[13]//MatrixForm=",ExpressionUUID->"187323c5-5971-4dcf-8e4d-\
+159669f2d783"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RoutingProbability", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757666901261101*^9, 3.757666906299074*^9}},
+ CellLabel->"In[11]:=",ExpressionUUID->"016a7248-c826-4fac-a684-bba9b65f6c50"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"0", ",", "0", ",", 
+   FractionBox["4", "5"], ",", 
+   FractionBox["1", "5"]}], "}"}]], "Output",
+ CellChangeTimes->{3.757666906810069*^9},
+ CellLabel->"Out[11]=",ExpressionUUID->"7b16f754-3623-474b-94c0-937e028a9bce"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RoutingProbability", "[", 
+  RowBox[{"network", ",", "1", ",", "3"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576669086631236`*^9, 3.7576669134970756`*^9}, {
+  3.7576669459510775`*^9, 3.7576669472351027`*^9}},
+ CellLabel->"In[14]:=",ExpressionUUID->"d9eae9d6-6d20-4d33-828c-48fd5d3ed99b"],
+
+Cell[BoxData[
+ FractionBox["4", "5"]], "Output",
+ CellChangeTimes->{3.7576669476710668`*^9},
+ CellLabel->"Out[14]=",ExpressionUUID->"ce791bd2-28e7-44a4-9ec1-e472b141eaab"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3. Calculating values", "Section",
+ CellChangeTimes->{{3.7576669692931004`*^9, 
+  3.757666973467122*^9}},ExpressionUUID->"06b4f370-d732-408c-b1cf-\
+e543d1d71d5d"],
+
+Cell["\<\
+For the next set of examples we will introduce another queueing network:\
+\>", "Text",
+ CellChangeTimes->{
+  3.7576669895200977`*^9},ExpressionUUID->"3c54d43b-42e3-4860-bb04-\
+6574a41b25fc"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"variableNetwork", "=", 
+  RowBox[{"QueueingNetwork", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "s1"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "s2"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "s3"}], "}"}]}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"1", "\[Rule]", "3"}], ",", "r13"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"2", "\[Rule]", "1"}], ",", "r21"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"2", "\[Rule]", "2"}], ",", "r22"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"3", "\[Rule]", "1"}], ",", "r31"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"3", "\[Rule]", "2"}], ",", "r32"}], "}"}]}], "}"}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ CellChangeTimes->{{3.757666997819123*^9, 3.757667013187085*^9}},
+ CellLabel->"In[15]:=",ExpressionUUID->"0dbc95da-0f51-435d-bf9b-51afbf0a206b"],
+
+Cell[BoxData[
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{1, 2, 3}, {{{1, 3}, {2, 1}, {2, 2}, {3, 1}, {3, 2}}, Null}, {
+      Properties -> {
+        2 -> {Private`scheduling -> $CellContext`FCFS}, 
+         1 -> {Private`scheduling -> $CellContext`FCFS}, 
+         3 -> {Private`scheduling -> $CellContext`FCFS}}, 
+       EdgeLabels -> {"EdgeWeight"}, VertexLabels -> {"VertexWeight"}, 
+       VertexWeight -> {$CellContext`s1, $CellContext`s2, $CellContext`s3}, 
+       EdgeWeight -> {$CellContext`r13, $CellContext`r21, $CellContext`r22, \
+$CellContext`r31, $CellContext`r32}}]]}, 
+    TagBox[GraphicsGroupBox[{
+       {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[
+        Medium], {
+         ArrowBox[BezierCurveBox[{{0.4969222221408822, 0.}, {
+          0.10576024704179966`, 0.35218325621645286`}, {0., 
+          0.8677950354344643}}], 0.012729919424260808`], 
+         InsetBox["r13", {0.18771545859002858, 0.39911296216737047}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[{{0.9999936704054052, 0.8642449521022529}, {
+          0.4969222221408822, 0.}}, 0.012729919424260808`], 
+         InsetBox["r21", {0.7484579462731438, 0.43212247605112647}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[BezierCurveBox[{{0.9999936704054052, 0.8642449521022529}, {
+          0.981970926460855, 1.07377326899105}, {1.126532124079844, 
+          1.2215408064758027`}, {1.2661872475123095`, 1.2335720726582493`}, {
+          1.4532513748739773`, 0.9068946392175588}, {1.3721904312244495`, 
+          0.7925380553164202}, {1.1715801273999724`, 0.7426512735922479}, {
+          0.9999936704054052, 0.8642449521022529}},
+          SplineDegree->7], 0.012729919424260808`], 
+         InsetBox["r22", {1.4338911762054276, 1.112706125045873}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[BezierCurveBox[{{0., 0.8677950354344643}, {
+          0.39116197509908346`, 0.5156117792179983}, {0.4969222221408822, 
+          0.}}], 0.012729919424260808`], 
+         InsetBox["r31", {0.3092067635508537, 0.468682073267094}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[{{0., 0.8677950354344643}, {0.9999936704054052, 
+          0.8642449521022529}}, 0.012729919424260808`], 
+         InsetBox["r32", {0.4999968352027026, 0.8660199937683586}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}}, 
+       {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[
+        0.7]}], {DiskBox[{0.4969222221408822, 0.}, 0.012729919424260808], 
+         InsetBox["s1", 
+          Offset[{2, 2}, {0.509652141565143, 0.012729919424260808}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.9999936704054052, 0.8642449521022529}, 
+          0.012729919424260808], 
+         InsetBox["s2", 
+          Offset[{2, 2}, {1.012723589829666, 0.8769748715265138}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0., 0.8677950354344643}, 0.012729919424260808], 
+         InsetBox["s3", 
+          Offset[{2, 2}, {0.012729919424260808, 0.8805249548587252}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}}}],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->{
+   "NetworkGraphics", FrontEnd`GraphicsHighlightColor -> Hue[0.8, 1., 0.6]},
+  FormatType->TraditionalForm,
+  FrameTicks->None]], "Output",
+ CellChangeTimes->{3.7576670290040627`*^9},
+ CellLabel->"Out[15]=",ExpressionUUID->"438553ef-3ef2-46a7-9015-183786d3c561"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3.1 Calculating the visit counts", "Subsection",
+ CellChangeTimes->{{3.757667043647122*^9, 3.7576670450651226`*^9}, {
+  3.757667088295079*^9, 3.757667089602088*^9}, {3.7576672469590845`*^9, 
+  3.75766725372008*^9}},ExpressionUUID->"f471ae6b-e326-4fc0-9a95-\
+5d0db9568af5"],
+
+Cell[TextData[{
+ "The visit counts can be calculated using the ",
+ StyleBox["VisitCount", "Input"],
+ " function. The ",
+ StyleBox["VisitCount", "Input"],
+ " function requires a queueing network as argument and yields a list of \
+visit counts. An index argument can be added to calculate the visit count of \
+a single station.\n\n\[LightBulb] ",
+ StyleBox["VisitCount", "Input"],
+ " is a ",
+ Cell[BoxData[
+  TemplateBox[{
+   "\"Functions That Remember Values They Have Found\"",
+    "https://reference.wolfram.com/language/tutorial/\
+FunctionsThatRememberValuesTheyHaveFound.html"},
+   "HyperlinkURL"]],
+  CellChangeTimes->{{3.7576629072087297`*^9, 3.7576629268517303`*^9}, 
+    3.7576629914267373`*^9, 3.7576676834026556`*^9},ExpressionUUID->
+  "b1a17beb-46d1-4a16-9942-397e0a3bf980"],
+ " to improve speed.\n\n\[WarningSign] Visit count calculation is currently \
+in an experimental state and might yield incorrect results. If needed, visit \
+counts can be manually set using:"
+}], "Text",
+ CellChangeTimes->{{3.757667321615074*^9, 3.757667336591079*^9}, {
+  3.757667631994675*^9, 3.7576676583937144`*^9}, {3.7576676912506657`*^9, 
+  3.757667706618696*^9}},ExpressionUUID->"8636d3de-aef2-45ab-94cd-\
+c71854b46f0a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"VisitCount", "[", "network", "]"}], "=", 
+  RowBox[{"{", 
+   RowBox[{"v1", ",", "v2", ",", "v3", ",", "v4"}], "}"}]}]], "Input",
+ CellChangeTimes->{{3.757667729465656*^9, 
+  3.757667741925685*^9}},ExpressionUUID->"2f14d1d5-82cf-4977-901c-\
+77c8bc952e74"],
+
+Cell[CellGroupData[{
+
+Cell["3.1.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576677634566817`*^9, 
+  3.757667769122714*^9}},ExpressionUUID->"e58e7700-fd35-4830-9e5b-\
+24845f71d9e5"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"VisitCount", "[", "network", "]"}]], "Input",
+ CellChangeTimes->{{3.757667774226691*^9, 3.757667778926669*^9}},
+ CellLabel->"In[17]:=",ExpressionUUID->"dbfd9dc2-10f3-493c-bd40-4415c9f5f61e"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"1", ",", 
+   FractionBox["9", "20"], ",", 
+   FractionBox["4", "5"], ",", 
+   FractionBox["1", "5"]}], "}"}]], "Output",
+ CellChangeTimes->{3.7576677794536552`*^9},
+ CellLabel->"Out[17]=",ExpressionUUID->"37b9c664-54b3-474e-a13f-1694ce1c2ded"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"VisitCount", "[", 
+  RowBox[{"network", ",", "4"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576677809616766`*^9, 3.7576677854306664`*^9}},
+ CellLabel->"In[18]:=",ExpressionUUID->"d6548e2a-74a7-4ad2-9b12-945b842f7fe0"],
+
+Cell[BoxData[
+ FractionBox["1", "5"]], "Output",
+ CellChangeTimes->{3.757667786227657*^9},
+ CellLabel->"Out[18]=",ExpressionUUID->"b9a10964-3d6b-4cc5-916e-b66b51757570"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"VisitCount", "[", "variableNetwork", "]"}]], "Input",
+ CellChangeTimes->{{3.757667789246724*^9, 3.757667792910701*^9}},
+ CellLabel->"In[19]:=",ExpressionUUID->"ae7b28f7-b0a8-4589-8b66-a69d063621d0"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"1", ",", 
+   RowBox[{"-", 
+    FractionBox["r32", 
+     RowBox[{
+      RowBox[{"-", "1"}], "+", "r22"}]]}], ",", "1"}], "}"}]], "Output",
+ CellChangeTimes->{3.757667793821656*^9},
+ CellLabel->"Out[19]=",ExpressionUUID->"06d0d12b-5f7d-45b1-a493-b690971433f6"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3.2 Calculating the service demands", "Subsection",
+ CellChangeTimes->{{3.7576681378992863`*^9, 
+  3.757668145648308*^9}},ExpressionUUID->"0810eb7a-7f05-4def-b33f-\
+87469e26cef8"],
+
+Cell[TextData[{
+ "The service demands can be calculated using the ",
+ StyleBox["ServiceDemand", "Input"],
+ " function. The ",
+ StyleBox["ServiceDemand", "Input"],
+ " function requires a queueing network as argument and yields a list of \
+service demands. An index argument can be added to calculate the service \
+demand of a single station."
+}], "Text",
+ CellChangeTimes->{{3.7576681538812847`*^9, 
+  3.7576681664662943`*^9}},ExpressionUUID->"2e9b714a-0438-424e-b520-\
+a4f60d5dfe83"],
+
+Cell[CellGroupData[{
+
+Cell["3.2.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576681754003315`*^9, 
+  3.7576681780262823`*^9}},ExpressionUUID->"7b2badc1-66bc-47ff-b865-\
+d74b00714546"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ServiceDemand", "[", "network", "]"}]], "Input",
+ CellChangeTimes->{{3.757668183451282*^9, 3.757668194211284*^9}},
+ CellLabel->"In[20]:=",ExpressionUUID->"edf0883a-bffa-4f1b-a7ae-dd0bfeb9874f"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"10", ",", "45", ",", "16", ",", "24"}], "}"}]], "Output",
+ CellChangeTimes->{3.757668194840273*^9},
+ CellLabel->"Out[20]=",ExpressionUUID->"7821933c-fd17-4112-b924-97ee7aab8cb7"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ServiceDemand", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576682014342747`*^9, 3.7576682084342747`*^9}},
+ CellLabel->"In[21]:=",ExpressionUUID->"24d28630-4b72-434a-8ac0-a262bac896db"],
+
+Cell[BoxData["10"], "Output",
+ CellChangeTimes->{3.7576682091762743`*^9},
+ CellLabel->"Out[21]=",ExpressionUUID->"a7038b61-6fed-4516-a3f7-b5086525e710"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ServiceDemand", "[", "variableNetwork", "]"}]], "Input",
+ CellChangeTimes->{{3.7576682119792833`*^9, 3.757668217750286*^9}},
+ CellLabel->"In[22]:=",ExpressionUUID->"02f57295-9361-4677-8937-b0935f456f4b"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"s1", ",", 
+   RowBox[{"-", 
+    FractionBox[
+     RowBox[{"r32", " ", "s2"}], 
+     RowBox[{
+      RowBox[{"-", "1"}], "+", "r22"}]]}], ",", "s3"}], "}"}]], "Output",
+ CellChangeTimes->{3.757668218277273*^9},
+ CellLabel->"Out[22]=",ExpressionUUID->"6702f934-a514-4a6d-9a9d-d5176df90c9f"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3.3 Calculating  the throughput", "Subsection",
+ CellChangeTimes->{{3.7576682462813253`*^9, 
+  3.757668268506333*^9}},ExpressionUUID->"933666dc-79c5-4dff-8437-\
+6035a93834ff"],
+
+Cell[TextData[{
+ "The throughput is calculated using the following formula, in a queueing \
+network with ",
+ StyleBox["M", "DisplayFormula"],
+ " stations and ",
+ StyleBox["K", "DisplayFormula"],
+ " customers:"
+}], "Text",
+ CellChangeTimes->{{3.757668299997281*^9, 3.757668316698321*^9}, {
+  3.7576684349720535`*^9, 
+  3.7576685113589945`*^9}},ExpressionUUID->"e211f518-b4e2-43bf-b37c-\
+795fcccea08f"],
+
+Cell[TextData[Cell[BoxData[
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{"X", "(", "K", ")"}], "=", 
+    RowBox[{"K", "\[CenterDot]", 
+     FractionBox["1", 
+      RowBox[{
+       UnderoverscriptBox["\[Sum]", 
+        RowBox[{"i", "=", "1"}], "M"], 
+       RowBox[{"E", "[", 
+        RowBox[{
+         SubscriptBox[
+          OverscriptBox["R", "^"], "i"], "(", "K", ")"}], "]"}]}]]}]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], 
+  TraditionalForm]],ExpressionUUID->"646927b7-ad17-480b-a092-09353fec3ccd"]], \
+"Text",
+ CellChangeTimes->{{3.7576747288768578`*^9, 
+  3.7576747719568605`*^9}},ExpressionUUID->"0ae67d92-68b2-4844-9268-\
+e1f8e8704b57"],
+
+Cell[TextData[{
+ "The throughput of the whole queueing network can be calculated using the ",
+ StyleBox["Throughput", "Input"],
+ " function. The ",
+ StyleBox["Throughput", "Input"],
+ " function requires a queueing network and the total number of customers as \
+arguments. The result can be a number or, if there are free variables in the \
+queueing network, an expression."
+}], "Text",
+ CellChangeTimes->{{3.7576688579140997`*^9, 
+  3.7576688950751343`*^9}},ExpressionUUID->"bc54c412-239a-4dd9-a815-\
+e140d3cf0fae"],
+
+Cell[CellGroupData[{
+
+Cell["3.3.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576689078991237`*^9, 
+  3.757668910679123*^9}},ExpressionUUID->"6247abbe-8f68-4b9e-b0a9-\
+8d304f15b1d5"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Throughput", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576689144500866`*^9, 3.7576689208491077`*^9}},
+ CellLabel->"In[24]:=",ExpressionUUID->"c2b4d1d6-ae95-4bb5-9fbc-a752afbd977e"],
+
+Cell[BoxData[
+ FractionBox["1", "95"]], "Output",
+ CellChangeTimes->{3.7576689213740935`*^9},
+ CellLabel->"Out[24]=",ExpressionUUID->"d029c34f-00eb-4280-a46e-0d3509aa0d71"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Throughput", "[", 
+  RowBox[{"network", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576689228231044`*^9, 3.7576689287620983`*^9}},
+ CellLabel->"In[25]:=",ExpressionUUID->"341d4739-a0fd-4044-aeb0-631fa1b8a096"],
+
+Cell[BoxData[
+ FractionBox["190", "9957"]], "Output",
+ CellChangeTimes->{3.7576689292670918`*^9},
+ CellLabel->"Out[25]=",ExpressionUUID->"38170bcf-720c-4de6-8002-f3ce2656bc08"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Throughput", "[", 
+  RowBox[{"variableNetwork", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757668931525091*^9, 3.7576689363371077`*^9}},
+ CellLabel->"In[26]:=",ExpressionUUID->"c65f784c-53b9-494c-90b4-401adc7770c3"],
+
+Cell[BoxData[
+ FractionBox["1", 
+  RowBox[{"s1", "-", 
+   FractionBox[
+    RowBox[{"r32", " ", "s2"}], 
+    RowBox[{
+     RowBox[{"-", "1"}], "+", "r22"}]], "+", "s3"}]]], "Output",
+ CellChangeTimes->{3.7576689388400855`*^9},
+ CellLabel->"Out[26]=",ExpressionUUID->"5f6b314f-a448-45ca-9fe6-7dbca2fff2ca"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3.4 Calculating the expected number of customers", "Subsection",
+ CellChangeTimes->{{3.757668971598096*^9, 
+  3.757668984968095*^9}},ExpressionUUID->"3e0aca93-a41e-4f51-89ee-\
+cd9b9b412e91"],
+
+Cell[TextData[{
+ "The expected number of customers is calculated using the following formula, \
+in a queueing network with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["K",
+    FontFamily->Consolas], TraditionalForm]],ExpressionUUID->
+  "2ed3db19-94f4-4b24-aece-fedc26a66a6a"],
+ " customers:"
+}], "Text",
+ CellChangeTimes->{{3.7576690014230876`*^9, 3.757669007194145*^9}, {
+  3.757669849986916*^9, 
+  3.757669858061857*^9}},ExpressionUUID->"264f2cd8-79ba-4847-99e9-\
+44dc2d18cca2"],
+
+Cell[BoxData[Cell[TextData[Cell[BoxData[
+  FormBox[
+   RowBox[{"E", "[", 
+    RowBox[{
+     RowBox[{
+      SubscriptBox["N", "i"], "(", "K", ")"}], "=", 
+     RowBox[{
+      RowBox[{"X", "(", "K", ")"}], "\[CenterDot]", 
+      RowBox[{"E", "[", 
+       RowBox[{
+        SubscriptBox[
+         OverscriptBox["R", "^"], "i"], "(", "K", ")"}], "]"}]}]}]}], 
+   TraditionalForm]],ExpressionUUID->"b13db7bb-51c4-46d0-9746-569327867a4b"]],
+   "Text",
+  FontFamily->"Consolas",ExpressionUUID->
+  "7f308dc2-f8f2-40ce-ab5d-0db242ff3494"]], "Text",
+ CellChangeTimes->{{3.7576700625394273`*^9, 
+  3.7576700634674406`*^9}},ExpressionUUID->"f2a58b85-bed6-4488-8c9b-\
+486d61d4e964"],
+
+Cell[TextData[{
+ "The expected number of customers can be calculated using the ",
+ StyleBox["ExpectedNumberOfCustomers", "Input"],
+ " function. The ",
+ StyleBox["ExpectedNumberOfCustomers", "Input"],
+ " function requires a queueing network and the total number of customers as \
+arguments and yields a list of expected customer counts. An index argument \
+can be added to calculate the expected number of customers of a single \
+station."
+}], "Text",
+ CellChangeTimes->{{3.7576691346991005`*^9, 
+  3.7576691469571295`*^9}},ExpressionUUID->"2f2caadc-0203-4ed3-83e7-\
+99c68948af30"],
+
+Cell[CellGroupData[{
+
+Cell["3.4.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576691549791384`*^9, 
+  3.757669158698134*^9}},ExpressionUUID->"b94b0f31-7ce9-40ec-a343-\
+6626d95e6301"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomers", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576691619110913`*^9, 3.7576691685100985`*^9}},
+ CellLabel->"In[27]:=",ExpressionUUID->"cd83a709-ecb7-4943-9105-65e9a1592292"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["2", "19"], ",", 
+   FractionBox["9", "19"], ",", 
+   FractionBox["16", "95"], ",", 
+   FractionBox["24", "95"]}], "}"}]], "Output",
+ CellChangeTimes->{3.757669168984089*^9},
+ CellLabel->"Out[27]=",ExpressionUUID->"b205db44-e143-40b7-a1f9-663e94a2c3f5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomers", "[", 
+  RowBox[{"network", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576691702950935`*^9, 3.7576691787511234`*^9}},
+ CellLabel->"In[28]:=",ExpressionUUID->"be32a025-b221-46f2-9fc2-a23b4aebf270"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["700", "3319"], ",", 
+   FractionBox["2850", "3319"], ",", 
+   FractionBox["1184", "3319"], ",", 
+   FractionBox["1904", "3319"]}], "}"}]], "Output",
+ CellChangeTimes->{3.757669179334092*^9},
+ CellLabel->"Out[28]=",ExpressionUUID->"bc849613-090f-4e90-9c7c-4625c987c32f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomers", "[", 
+  RowBox[{"network", ",", "1", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576691823900967`*^9, 3.7576691874210987`*^9}},
+ CellLabel->"In[29]:=",ExpressionUUID->"6dd12876-72a0-4267-8f16-aa09d5fe57a8"],
+
+Cell[BoxData[
+ FractionBox["2", "19"]], "Output",
+ CellChangeTimes->{3.757669187887089*^9},
+ CellLabel->"Out[29]=",ExpressionUUID->"faae828f-48ee-4a7d-8223-6cea48b08f60"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomers", "[", 
+  RowBox[{"variableNetwork", ",", "1", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576691898890924`*^9, 3.7576691974360905`*^9}},
+ CellLabel->"In[30]:=",ExpressionUUID->"f875e0c4-7d0a-4191-a121-11450daf75cb"],
+
+Cell[BoxData[
+ FractionBox["s1", 
+  RowBox[{"s1", "-", 
+   FractionBox[
+    RowBox[{"r32", " ", "s2"}], 
+    RowBox[{
+     RowBox[{"-", "1"}], "+", "r22"}]], "+", "s3"}]]], "Output",
+ CellChangeTimes->{3.7576691977990856`*^9},
+ CellLabel->"Out[30]=",ExpressionUUID->"4a986386-78ae-4139-a9ef-a6657ff90466"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3.5 Calculating the expected response time", "Subsection",
+ CellChangeTimes->{{3.757669213834096*^9, 
+  3.757669223549096*^9}},ExpressionUUID->"90ad6c07-56ff-428d-adb5-\
+6c53710d7210"],
+
+Cell[TextData[{
+ "The expected response time is calculated using the following formula, in a \
+queueing network with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["K",
+    FontFamily->"Consolas"], TraditionalForm]], "Text",ExpressionUUID->
+  "dc60b168-fabe-4be4-8686-4efa2b09614c"],
+ " customers; with",
+ StyleBox[" ",
+  FontFamily->Consolas],
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"E", "[", 
+    SubscriptBox["S", "i"], "]"}], TraditionalForm]], "Text",
+  FontFamily->Consolas,ExpressionUUID->"86b13036-d840-4a94-bc93-4c4e62edda85"],
+ " denoting the service time of station ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["i",
+    FontFamily->Consolas], TraditionalForm]],ExpressionUUID->
+  "f1a41e91-2a62-44b4-8076-a78aa81fc4c5"],
+ ":"
+}], "Text",
+ CellChangeTimes->{{3.757669243034092*^9, 3.757669276882146*^9}, {
+  3.757669325581088*^9, 3.7576693284901295`*^9}, {3.757669378544097*^9, 
+  3.757669423860094*^9}, {3.7576694752893553`*^9, 3.7576695432723265`*^9}, {
+  3.7576696030696077`*^9, 3.757669657219565*^9}, {3.7576698951229095`*^9, 
+  3.7576699223898573`*^9}, {3.7576699884094667`*^9, 
+  3.7576700052474227`*^9}},ExpressionUUID->"5016f58c-2b48-4ca5-ac13-\
+452ae2b04574"],
+
+Cell[TextData[Cell[BoxData[{
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{
+     StyleBox["FCFS",
+      FontFamily->"Consolas"], 
+     StyleBox[":",
+      FontFamily->"Consolas"], 
+     RowBox[{
+      StyleBox["E",
+       FontFamily->"Consolas"], 
+      StyleBox["[",
+       FontFamily->"Consolas"], 
+      RowBox[{
+       SubscriptBox[
+        StyleBox[
+         StyleBox[
+          StyleBox[
+           StyleBox[
+            StyleBox[
+             StyleBox["R",
+              FontFamily->"Consolas"],
+             FontFamily->"Consolas"],
+            FontFamily->"Consolas"],
+           FontFamily->"Consolas"],
+          FontFamily->"Consolas"],
+         FontFamily->"Consolas"], "i"], 
+       StyleBox["(",
+        FontFamily->"Consolas"], 
+       StyleBox["K",
+        FontFamily->"Consolas"], 
+       StyleBox[")",
+        FontFamily->"Consolas"]}], 
+      StyleBox["]",
+       FontFamily->"Consolas"]}]}], 
+    StyleBox["=",
+     FontFamily->"Consolas"], 
+    RowBox[{
+     RowBox[{
+      StyleBox["(",
+       FontFamily->"Consolas"], 
+      RowBox[{
+       RowBox[{
+        StyleBox["E",
+         FontFamily->"Consolas"], 
+        StyleBox["[",
+         FontFamily->"Consolas"], 
+        RowBox[{
+         SubscriptBox[
+          StyleBox[
+           StyleBox[
+            StyleBox[
+             StyleBox[
+              StyleBox[
+               StyleBox["N",
+                FontFamily->"Consolas"],
+               FontFamily->"Consolas"],
+              FontFamily->"Consolas"],
+             FontFamily->"Consolas"],
+            FontFamily->"Consolas"],
+           FontFamily->"Consolas"], "i"], 
+         StyleBox["(",
+          FontFamily->"Consolas"], 
+         StyleBox[
+          RowBox[{"K", "-", "1"}],
+          FontFamily->"Consolas"], 
+         StyleBox[")",
+          FontFamily->"Consolas"]}], 
+        StyleBox["]",
+         FontFamily->"Consolas"]}], 
+       StyleBox["+",
+        FontFamily->"Consolas"], 
+       StyleBox["1",
+        FontFamily->"Consolas"]}], 
+      StyleBox[")",
+       FontFamily->"Consolas"]}], 
+     StyleBox["\[CenterDot]",
+      FontFamily->"Consolas"], 
+     RowBox[{
+      StyleBox["E",
+       FontFamily->"Consolas"], 
+      StyleBox["[",
+       FontFamily->"Consolas"], 
+      SubscriptBox[
+       StyleBox[
+        StyleBox["S",
+         FontFamily->"Consolas"],
+        FontFamily->"Consolas"], "i"], 
+      StyleBox["]",
+       FontFamily->"Consolas"]}]}]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], TraditionalForm], "\n", 
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{
+     StyleBox["IS",
+      FontFamily->"Consolas"], 
+     StyleBox[":",
+      FontFamily->"Consolas"], 
+     RowBox[{
+      StyleBox["E",
+       FontFamily->"Consolas"], 
+      StyleBox["[",
+       FontFamily->"Consolas"], 
+      RowBox[{
+       SubscriptBox[
+        StyleBox[
+         StyleBox[
+          StyleBox[
+           StyleBox[
+            StyleBox["R",
+             FontFamily->"Consolas"],
+            FontFamily->"Consolas"],
+           FontFamily->"Consolas"],
+          FontFamily->"Consolas"],
+         FontFamily->"Consolas"], "i"], 
+       StyleBox["(",
+        FontFamily->"Consolas"], 
+       StyleBox["K",
+        FontFamily->"Consolas"], 
+       StyleBox[")",
+        FontFamily->"Consolas"]}], 
+      StyleBox["]",
+       FontFamily->"Consolas"]}]}], 
+    StyleBox["=",
+     FontFamily->"Consolas"], 
+    RowBox[{
+     StyleBox["E",
+      FontFamily->"Consolas"], 
+     StyleBox["[",
+      FontFamily->"Consolas"], 
+     SubscriptBox[
+      StyleBox[
+       StyleBox["S",
+        FontFamily->"Consolas"],
+       FontFamily->"Consolas"], "i"], 
+     StyleBox["]",
+      FontFamily->"Consolas"]}]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], TraditionalForm]}],
+ FontFamily->"Consolas",
+ FontSlant->
+  "Italic",ExpressionUUID->"04e9db02-48cd-42c1-8c2f-ee196ddb63e1"]], "Text",
+ CellChangeTimes->{{3.7576717822706857`*^9, 
+  3.7576718364456825`*^9}},ExpressionUUID->"a6c6cc55-9264-44c3-8535-\
+950d18af048a"],
+
+Cell[TextData[{
+ "The expected response time can be calculated using the ",
+ StyleBox["ExpectedResponseTime", "Input"],
+ " function. The ",
+ StyleBox["ExpectedResponseTime", "Input"],
+ " function requires a queueing network and the total number of customers as \
+arguments and yields a list of expected response times. An index argument can \
+be added to calculate the expected response time of a single station."
+}], "Text",
+ CellChangeTimes->{{3.7576718804466934`*^9, 
+  3.757671894148732*^9}},ExpressionUUID->"ad50ca3e-42f0-45ce-b8f0-\
+f6327006f03c"],
+
+Cell[CellGroupData[{
+
+Cell["3.5.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.757671918712717*^9, 
+  3.757671923113737*^9}},ExpressionUUID->"1ebce5be-5df4-4924-9665-\
+61aade77ab14"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTime", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576719286587*^9, 3.757671936959744*^9}},
+ CellLabel->"In[31]:=",ExpressionUUID->"6742cc86-fec5-4424-8824-2fa56a2056bb"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"10", ",", "100", ",", "20", ",", "120"}], "}"}]], "Output",
+ CellChangeTimes->{3.757671937398684*^9},
+ CellLabel->"Out[31]=",ExpressionUUID->"84cd69e8-a02a-4c17-a661-fa55f7de2b55"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTime", "[", 
+  RowBox[{"network", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576719401587195`*^9, 3.7576719465996876`*^9}},
+ CellLabel->"In[32]:=",ExpressionUUID->"a48df212-2074-4c5c-bca8-dd3369fd93ae"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["210", "19"], ",", "100", ",", 
+   FractionBox["444", "19"], ",", 
+   FractionBox["2856", "19"]}], "}"}]], "Output",
+ CellChangeTimes->{3.7576719471706853`*^9},
+ CellLabel->"Out[32]=",ExpressionUUID->"7f29710e-e577-4179-bd49-912889b33b49"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTime", "[", 
+  RowBox[{"network", ",", "2", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576719510527215`*^9, 3.757671957092699*^9}},
+ CellLabel->"In[33]:=",ExpressionUUID->"16d2b6ea-6c5e-42c8-ae57-8e40e756777c"],
+
+Cell[BoxData["100"], "Output",
+ CellChangeTimes->{3.757671957561685*^9},
+ CellLabel->"Out[33]=",ExpressionUUID->"2d62f49c-7f77-4328-b4ae-b7b376f1d858"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTime", "[", 
+  RowBox[{"variableNetwork", ",", "2", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576719640277443`*^9, 3.757671971224743*^9}},
+ CellLabel->"In[34]:=",ExpressionUUID->"cc5e74d5-769f-4f03-ab8e-06d226a398d8"],
+
+Cell[BoxData[
+ RowBox[{"s2", " ", 
+  RowBox[{"(", 
+   RowBox[{"1", "-", 
+    FractionBox[
+     RowBox[{"r32", " ", "s2"}], 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "r22"}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"s1", "-", 
+        FractionBox[
+         RowBox[{"r32", " ", "s2"}], 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "r22"}]], "+", "s3"}], ")"}]}]]}], 
+   ")"}]}]], "Output",
+ CellChangeTimes->{3.7576719721556892`*^9},
+ CellLabel->"Out[34]=",ExpressionUUID->"06cd0a61-b4ba-425a-b9f5-c5165dbf2663"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3.6 Calculating the expected response time per passage", "Subsection",
+ CellChangeTimes->{
+  3.7576719918407135`*^9},ExpressionUUID->"c3ffef83-ecda-46fe-8484-\
+8e9fec285c56"],
+
+Cell[TextData[{
+ "The expected response time per passage is calculated using the following \
+formula, in a queueing network with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["K",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "ffeb5b9c-0607-44fb-872d-44cacca22ff6"],
+ " customers; with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    SubscriptBox["V", "i"],
+    FontFamily->"Consolas",
+    FontSlant->"Italic"], TraditionalForm]],ExpressionUUID->
+  "4edfbf56-59f0-418d-b63f-7d779e185767"],
+ " denoting the visit count of station ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["i",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "9ac8ef33-9815-4a20-a048-3bc1fd01da74"],
+ ":"
+}], "Text",
+ CellChangeTimes->{{3.757672010759693*^9, 3.757672021427706*^9}, {
+  3.757672077526698*^9, 
+  3.7576721383847027`*^9}},ExpressionUUID->"7cab1e7f-5a61-4f8d-991d-\
+6d71e7eb434c"],
+
+Cell[TextData[Cell[BoxData[
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{"E", "[", 
+     RowBox[{
+      SubscriptBox[
+       OverscriptBox["R", "^"], "i"], "(", "K", ")"}], "]"}], "=", 
+    RowBox[{
+     RowBox[{"E", "[", 
+      RowBox[{
+       SubscriptBox["R", "i"], "(", "K", ")"}], "]"}], "\[CenterDot]", 
+     SubscriptBox["V", "i"]}]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], 
+  TraditionalForm]],ExpressionUUID->"5b7c96a2-90e4-4eaa-ae9c-9cfaa0bc7ff0"]], \
+"Text",
+ CellChangeTimes->{{3.757672182973686*^9, 
+  3.7576722190136943`*^9}},ExpressionUUID->"ea440d33-e434-4b77-a0c6-\
+68748d56a6d8"],
+
+Cell[TextData[{
+ "The expected response time per passage can be calculated using the ",
+ StyleBox["ExpectedResponseTimePerPassage", "Input"],
+ " function. The ",
+ StyleBox["ExpectedResponseTimePerPassage", "Input"],
+ " function requires a queueing network and the total number of customers as \
+arguments and yields a list of expected response times per passage. An index \
+argument can be added to calculate the expected response time per passage of \
+a single station."
+}], "Text",
+ CellChangeTimes->{
+  3.757672253712697*^9},ExpressionUUID->"8131cc36-a0cf-43bc-8311-\
+c6b5fa461813"],
+
+Cell[CellGroupData[{
+
+Cell["3.6.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576722646457367`*^9, 
+  3.7576722687217383`*^9}},ExpressionUUID->"22818529-02c6-4a1d-855d-\
+17523692f36e"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassage", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576722888106966`*^9, 3.7576722971127367`*^9}},
+ CellLabel->"In[35]:=",ExpressionUUID->"6dbe8901-199e-43be-bd1d-d79a698a5ac6"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"10", ",", "45", ",", "16", ",", "24"}], "}"}]], "Output",
+ CellChangeTimes->{3.757672297765684*^9},
+ CellLabel->"Out[35]=",ExpressionUUID->"662cc9c7-2eeb-4fd0-ad45-9d023504891b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassage", "[", 
+  RowBox[{"network", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576722992267046`*^9, 3.7576723105587435`*^9}},
+ CellLabel->"In[36]:=",ExpressionUUID->"2539e1b0-2eaf-4e7e-a7c3-e4d068ae265b"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["210", "19"], ",", "45", ",", 
+   FractionBox["1776", "95"], ",", 
+   FractionBox["2856", "95"]}], "}"}]], "Output",
+ CellChangeTimes->{3.7576723110076857`*^9},
+ CellLabel->"Out[36]=",ExpressionUUID->"c5ffc491-5e91-405f-a113-4bc3c878531a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassage", "[", 
+  RowBox[{"network", ",", "1", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576723135606985`*^9, 3.7576723217347035`*^9}},
+ CellLabel->"In[37]:=",ExpressionUUID->"d6a21d27-8020-4a65-8e3d-d8e3badc79ff"],
+
+Cell[BoxData["45"], "Output",
+ CellChangeTimes->{3.7576723221526856`*^9},
+ CellLabel->"Out[37]=",ExpressionUUID->"7acc944a-aede-436d-a74c-e784d57f43fc"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassage", "[", 
+  RowBox[{"variableNetwork", ",", "2", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757672324842697*^9, 3.7576723331487274`*^9}},
+ CellLabel->"In[38]:=",ExpressionUUID->"97c38153-6e2f-435d-ac84-773a7bb28ec8"],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{"r32", " ", "s2", " ", 
+    RowBox[{"(", 
+     RowBox[{"1", "-", 
+      FractionBox[
+       RowBox[{"r32", " ", "s2"}], 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "r22"}], ")"}], " ", 
+        RowBox[{"(", 
+         RowBox[{"s1", "-", 
+          FractionBox[
+           RowBox[{"r32", " ", "s2"}], 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "r22"}]], "+", "s3"}], ")"}]}]]}], 
+     ")"}]}], 
+   RowBox[{
+    RowBox[{"-", "1"}], "+", "r22"}]]}]], "Output",
+ CellChangeTimes->{3.7576723336157036`*^9},
+ CellLabel->"Out[38]=",ExpressionUUID->"db2a9b54-6fe6-48ad-9d76-7ef75132ddd0"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["4. Using the formulas", "Section",
+ CellChangeTimes->{{3.7576723435327144`*^9, 
+  3.7576723467807055`*^9}},ExpressionUUID->"6130e7ac-bdec-4dfc-8987-\
+3ce45747bbc7"],
+
+Cell["\<\
+For the next set of examples we will introduce another queueing network:\
+\>", "Text",
+ CellChangeTimes->{
+  3.757672359306694*^9},ExpressionUUID->"5e471103-3c5a-4847-a34a-\
+a05f1da4fd9b"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"twoFCFSnetwork", "=", 
+  RowBox[{"QueueingNetwork", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "s1"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"FCFS", ",", "s2"}], "}"}]}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"1", "\[Rule]", "2"}], ",", "1"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"2", "\[Rule]", "1"}], ",", "1"}], "}"}]}], "}"}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ CellChangeTimes->{{3.7576723655526967`*^9, 3.757672372162708*^9}},
+ CellLabel->"In[39]:=",ExpressionUUID->"87e24410-61c3-42e5-a87c-efbbe12c2049"],
+
+Cell[BoxData[
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{1, 2}, {{{1, 2}, {2, 1}}, Null}, {
+      Properties -> {
+        2 -> {Private`scheduling -> $CellContext`FCFS}, 
+         1 -> {Private`scheduling -> $CellContext`FCFS}}, 
+       EdgeLabels -> {"EdgeWeight"}, VertexLabels -> {"VertexWeight"}, 
+       VertexWeight -> {$CellContext`s1, $CellContext`s2}, 
+       EdgeWeight -> {1, 1}}]]}, 
+    TagBox[GraphicsGroupBox[{
+       {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[
+        Medium], {
+         ArrowBox[BezierCurveBox[{{1., 0.}, {0., -0.32888149436623376`}, {-1.,
+           0.}}], 0.02261146496815286], 
+         InsetBox["1", {1.942890293094024*^-16, -0.14000000000000012}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[BezierCurveBox[{{-1., 0.}, {0., 0.32888149436623376`}, {1., 
+          0.}}], 0.02261146496815286], 
+         InsetBox["1", {-1.942890293094024*^-16, 0.14000000000000012}, 
+          ImageScaled[{0.5, 0.5}],
+          BaseStyle->"Graphics"]}}, 
+       {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[
+        0.7]}], {DiskBox[{1., 0.}, 0.02261146496815286], 
+         InsetBox["s1", 
+          Offset[{2, 2}, {1.0226114649681528, 0.02261146496815286}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {DiskBox[{-1., 0.}, 0.02261146496815286], 
+         InsetBox["s2", 
+          Offset[{2, 2}, {-0.9773885350318472, 0.02261146496815286}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}}}],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->{
+   "NetworkGraphics", FrontEnd`GraphicsHighlightColor -> Hue[0.8, 1., 0.6]},
+  FormatType->TraditionalForm,
+  FrameTicks->None]], "Output",
+ CellChangeTimes->{3.7576723730387077`*^9},
+ CellLabel->"Out[39]=",ExpressionUUID->"6e8df645-e9d6-4cc3-8baf-9f499639bc14"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["4.1 Calculating the state space", "Subsection",
+ CellChangeTimes->{{3.757672476090743*^9, 
+  3.7576724856537175`*^9}},ExpressionUUID->"4f71355f-9e61-4b64-a0ff-\
+88bee5140afc"],
+
+Cell[TextData[{
+ "The state space uses the following formula, in a queueing network with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["M",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "64df7d5a-f24d-4b12-80a8-48118516ae39"],
+ " stations and ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["K",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "d1bc6d1c-d03c-448d-aa1c-e7a2a199a850"],
+ " customers:"
+}], "Text",
+ CellChangeTimes->{{3.757672500850692*^9, 
+  3.757672510356683*^9}},ExpressionUUID->"c6095af4-ae12-49a2-8d64-\
+3f87de711d57"],
+
+Cell[TextData[Cell[BoxData[
+ FormBox[
+  RowBox[{
+   RowBox[{"\[ScriptCapitalI]", 
+    StyleBox[
+     RowBox[{"(", 
+      RowBox[{"M", ",", "K"}], ")"}],
+     FontSlant->"Italic"]}], 
+   StyleBox["=",
+    FontSlant->"Italic"], 
+   StyleBox[
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          SubscriptBox["n", "1"], "+", "\[CenterEllipsis]", "+", 
+          SubscriptBox["n", "m"]}], ")"}], "\[Element]", 
+        SuperscriptBox["\[DoubleStruckCapitalN]", "M"]}], "|", 
+       RowBox[{
+        UnderoverscriptBox["\[Sum]", 
+         RowBox[{"i", "=", "1"}], "M"], 
+        SubscriptBox["n", "i"]}]}], "=", "K"}], "}"}],
+    FontSlant->"Italic"]}], TraditionalForm]],
+ FontFamily->
+  "Consolas",ExpressionUUID->"6d79449a-f366-44c5-afe5-506ecb905ba7"]], "Text",
+ CellChangeTimes->{{3.757672578273684*^9, 3.7576727545967426`*^9}, {
+  3.757672786984696*^9, 
+  3.757672812390729*^9}},ExpressionUUID->"ec877abd-ed8c-410b-9d66-\
+01ca9a78d02d"],
+
+Cell[TextData[{
+ "The state space can be calculated using the ",
+ StyleBox["StateSpace", "Input"],
+ " function. The ",
+ StyleBox["StateSpace", "Input"],
+ " function requires the number of station and the total number of customers \
+as arguments and yields the state space."
+}], "Text",
+ CellChangeTimes->{
+  3.7576728453777423`*^9},ExpressionUUID->"9aa411de-e1f8-4511-9449-\
+b41e92ba958a"],
+
+Cell[CellGroupData[{
+
+Cell["4.1.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.757672856118696*^9, 
+  3.7576728600007095`*^9}},ExpressionUUID->"9a0801ba-e13e-4f9a-939d-\
+30f355717b10"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StateSpace", "[", 
+  RowBox[{"3", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576728623847065`*^9, 3.757672867695693*^9}},
+ CellLabel->"In[40]:=",ExpressionUUID->"dc69f4b9-c491-4db7-ab3c-eb1432155c66"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"2", ",", "0", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "2", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0", ",", "2"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "1", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "0", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "1", ",", "1"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.757672868336709*^9},
+ CellLabel->"Out[40]=",ExpressionUUID->"5e2eba67-4e0f-424d-943c-20cffaa3deb5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StateSpace", "[", 
+  RowBox[{"2", ",", "3"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757672869996728*^9, 3.757672876392743*^9}},
+ CellLabel->"In[41]:=",ExpressionUUID->"ef9ee61e-1bfa-4f80-ac04-ca454a1d6bea"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"3", ",", "0"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "3"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"2", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "2"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{3.7576728769536858`*^9},
+ CellLabel->"Out[41]=",ExpressionUUID->"1a11f938-7a58-45b3-a150-bffc43426031"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["4.2 Using the 2 FCFS formula", "Subsection",
+ CellChangeTimes->{
+  3.7576729082337217`*^9},ExpressionUUID->"4892fed2-cb02-45bb-9f62-\
+bbd8465f0da1"],
+
+Cell[TextData[{
+ "The following formulas have been derived for queueing networks with 2 FCFS \
+stations and ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["K",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "e00b0352-5f65-4e37-9968-4ea94d55caab"],
+ " customers; with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    SubscriptBox["D", "i"],
+    FontFamily->"Consolas",
+    FontSlant->"Italic"], TraditionalForm]],ExpressionUUID->
+  "b8f2927d-8d4a-4b91-aab8-59f4c50da92d"],
+ " denoting the service demand of station ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["i",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "66998e1a-5142-4ce0-af4e-94ce37192643"],
+ ":"
+}], "Text",
+ CellChangeTimes->{{3.7576729240626965`*^9, 3.757672942958745*^9}, 
+   3.7576730110106907`*^9},ExpressionUUID->"333c5d51-3c94-4c5e-8a61-\
+3ebcd5039755"],
+
+Cell[TextData[Cell[BoxData[{
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{"E", "[", 
+     RowBox[{
+      SubscriptBox["N", "a"], "(", "K", ")"}], "]"}], "=", 
+    FractionBox[
+     RowBox[{
+      UnderoverscriptBox["\[Sum]", 
+       RowBox[{"i", "=", "0"}], "K"], 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"K", "-", "i"}], ")"}], 
+        SuperscriptBox[
+         SubscriptBox["D", "a"], 
+         RowBox[{"K", "-", "1"}]], 
+        SuperscriptBox[
+         SubscriptBox["D", "b"], "i"]}], ")"}]}], 
+     RowBox[{
+      UnderoverscriptBox["\[Sum]", 
+       RowBox[{"j", "=", "0"}], "K"], 
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox[
+         SubscriptBox["D", "a"], 
+         RowBox[{"K", "-", "j"}]], 
+        SuperscriptBox[
+         SubscriptBox["D", "b"], 
+         RowBox[{"^", "j"}]]}], ")"}]}]]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], TraditionalForm], "\[IndentingNewLine]", 
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{"E", "[", 
+     RowBox[{
+      SubscriptBox[
+       OverscriptBox["R", "^"], "a"], "(", "K", ")"}], "]"}], "=", 
+    FractionBox[
+     RowBox[{
+      UnderoverscriptBox["\[Sum]", 
+       RowBox[{"i", "=", "0"}], "K"], 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"K", "-", "i"}], ")"}], 
+        SuperscriptBox[
+         SubscriptBox["D", "a"], 
+         RowBox[{"K", "-", "i"}]], 
+        SuperscriptBox[
+         SubscriptBox["D", "b"], "i"]}], ")"}]}], 
+     RowBox[{
+      UnderoverscriptBox["\[Sum]", 
+       RowBox[{"j", "=", "0"}], 
+       RowBox[{"K", "-", "1"}]], 
+      RowBox[{"(", 
+       RowBox[{
+        SuperscriptBox[
+         SubscriptBox["D", "a"], 
+         RowBox[{"K", "-", "1", "-", "j"}]], 
+        SuperscriptBox[
+         SubscriptBox["D", "b"], "j"]}], ")"}]}]]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], 
+  TraditionalForm]}],ExpressionUUID->"544a416c-6a98-4caa-9c8d-e5887e7a842f"]],\
+ "Text",
+ CellChangeTimes->{{3.757673062852682*^9, 
+  3.757673312316741*^9}},ExpressionUUID->"cca62240-973f-4beb-9ee9-\
+943fe90de53f"],
+
+Cell[TextData[{
+ "The formulas can be applied with the ",
+ StyleBox["ExpectedResponseTimePerPassageTwoFCFSFormula", "Input"],
+ " and the ",
+ StyleBox["ExpectedNumberOfCustomersTwoFCFSFormula", "Input"],
+ " functions. There are two ways to call these functions.\n\nThe first way is \
+by using the queueing network and the total number of customers as arguments. \
+This applies the formula to all stations and returns a list of results. An \
+index argument can be added to apply the formula for a single station\n\nThe \
+second way is using the service demand of the first station (a), the service \
+demand of the second station (b) and the total number of customers as \
+arguments. This applies the formula to the first station."
+}], "Text",
+ CellChangeTimes->{
+  3.75767340895478*^9},ExpressionUUID->"93046efb-890c-48b1-ac3c-058f443fa69f"],
+
+Cell[CellGroupData[{
+
+Cell["4.2.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576734189837866`*^9, 
+  3.757673423913787*^9}},ExpressionUUID->"824a4a85-e64c-436e-9c64-\
+c980362461c3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersTwoFCFSFormula", "[", 
+  RowBox[{"twoFCFSnetwork", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757673426279787*^9, 3.757673434994765*^9}},
+ CellLabel->"In[42]:=",ExpressionUUID->"ff469d87-e785-4040-9163-52209204e5db"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["s1", 
+    RowBox[{"s1", "+", "s2"}]], ",", 
+   FractionBox["s2", 
+    RowBox[{"s1", "+", "s2"}]]}], "}"}]], "Output",
+ CellChangeTimes->{3.7576734354527283`*^9},
+ CellLabel->"Out[42]=",ExpressionUUID->"bf6f31af-ccf1-485d-95ea-9e0bce0ed8f1"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersTwoFCFSFormula", "[", 
+  RowBox[{"twoFCFSnetwork", ",", "2", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757673437125745*^9, 3.7576734497667875`*^9}},
+ CellLabel->"In[43]:=",ExpressionUUID->"38f2375b-d0b6-4946-9538-fe150cbb1ea0"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"2", " ", 
+    SuperscriptBox["s1", "2"]}], "+", 
+   RowBox[{"s1", " ", "s2"}]}], 
+  RowBox[{
+   SuperscriptBox["s1", "2"], "+", 
+   RowBox[{"s1", " ", "s2"}], "+", 
+   SuperscriptBox["s2", "2"]}]]], "Output",
+ CellChangeTimes->{3.7576734502477274`*^9},
+ CellLabel->"Out[43]=",ExpressionUUID->"c6cd57e6-3be4-4a32-8d9a-89cab861ef7c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersTwoFCFSFormula", "[", 
+  RowBox[{"d1", ",", "d2", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757673453124775*^9, 3.7576734651477375`*^9}},
+ CellLabel->"In[44]:=",ExpressionUUID->"dc556f03-ae18-4c60-ad27-7d00b5e35699"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"2", " ", 
+    SuperscriptBox["d1", "2"]}], "+", 
+   RowBox[{"d1", " ", "d2"}]}], 
+  RowBox[{
+   SuperscriptBox["d1", "2"], "+", 
+   RowBox[{"d1", " ", "d2"}], "+", 
+   SuperscriptBox["d2", "2"]}]]], "Output",
+ CellChangeTimes->{3.757673465991728*^9},
+ CellLabel->"Out[44]=",ExpressionUUID->"b53f99fe-52dd-420d-bdcc-eb591e9f69f5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageTwoFCFSFormula", "[", 
+  RowBox[{"twoFCFSnetwork", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757673469372737*^9, 3.7576734790887394`*^9}},
+ CellLabel->"In[45]:=",ExpressionUUID->"7b60a4a8-28c1-43de-b8a4-382f4b0c2e9e"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"s1", ",", "s2"}], "}"}]], "Output",
+ CellChangeTimes->{3.757673479602727*^9},
+ CellLabel->"Out[45]=",ExpressionUUID->"c52b1607-61c9-4b67-acb8-17d33703930c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageTwoFCFSFormula", "[", 
+  RowBox[{"twoFCFSnetwork", ",", "2", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757673481429758*^9, 3.7576734914167824`*^9}},
+ CellLabel->"In[46]:=",ExpressionUUID->"2877f14a-4e57-45fe-90e9-35430547f402"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"s1", " ", "s2"}], "+", 
+   RowBox[{"2", " ", 
+    SuperscriptBox["s2", "2"]}]}], 
+  RowBox[{"s1", "+", "s2"}]]], "Output",
+ CellChangeTimes->{3.757673491819752*^9},
+ CellLabel->"Out[46]=",ExpressionUUID->"b4057d52-3742-4b0b-9f0f-8c6fafb80ee0"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageTwoFCFSFormula", "[", 
+  RowBox[{"d1", ",", "d2", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576734941677904`*^9, 3.7576735052257867`*^9}},
+ CellLabel->"In[47]:=",ExpressionUUID->"a8b2fced-238b-497d-8564-0ca31e2704f7"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"2", " ", 
+    SuperscriptBox["d1", "2"]}], "+", 
+   RowBox[{"d1", " ", "d2"}]}], 
+  RowBox[{"d1", "+", "d2"}]]], "Output",
+ CellChangeTimes->{3.757673506241728*^9},
+ CellLabel->"Out[47]=",ExpressionUUID->"b6151aa1-c6fc-4928-99d5-4380dbe8cb91"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["4.3 Using the M FCFS formula", "Subsection",
+ CellChangeTimes->{
+  3.7576735281617775`*^9},ExpressionUUID->"7b99f1ea-2a7e-40cc-88d0-\
+39a5f46fc780"],
+
+Cell[TextData[{
+ "The following formulas have been derived for queueing networks with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["M",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "731a280e-c62a-4404-944b-c94524253b02"],
+ " FCFS stations and ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["K",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "ea8ece45-6ab3-47cc-8bd1-b8e82690ddcf"],
+ " customers; with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    SubscriptBox["D", "i"],
+    FontFamily->"Consolas",
+    FontSlant->"Italic"], TraditionalForm]],ExpressionUUID->
+  "2f6f733d-442c-4de9-aec2-9b78666247af"],
+ " denoting the service demand of station ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["i",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "69d5edcb-155c-4ee7-946c-65c819feddbd"],
+ ":"
+}], "Text",
+ CellChangeTimes->{{3.7576738647888727`*^9, 
+  3.757673923682857*^9}},ExpressionUUID->"45f5fac1-d9a0-4099-8b88-\
+5fa42342a0e7"],
+
+Cell[TextData[Cell[BoxData[{
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{"E", "[", 
+     RowBox[{
+      SubscriptBox["N", "i"], "(", "K", ")"}], "]"}], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["\[Sum]", 
+       RowBox[{
+        StyleBox["n",
+         FontVariations->{"Underline"->True}], "\[Element]", 
+        RowBox[{
+         StyleBox["\[ScriptCapitalI]",
+          FontSize->7,
+          FontSlant->"Plain"], 
+         StyleBox["(",
+          FontSlant->"Italic"], 
+         StyleBox[
+          RowBox[{"M", ",", "K"}],
+          FontSlant->"Italic"], 
+         StyleBox[")",
+          FontSlant->"Italic"]}]}]], 
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["n", "i"], 
+        RowBox[{
+         UnderoverscriptBox["\[Product]", 
+          RowBox[{"j", "=", "1"}], "M"], 
+         SuperscriptBox[
+          SubscriptBox["D", "j"], 
+          SubscriptBox["n", "j"]]}]}], ")"}]}], 
+     RowBox[{
+      SubscriptBox["\[Sum]", 
+       RowBox[{
+        StyleBox["n",
+         FontVariations->{"Underline"->True}], 
+        StyleBox["\[Element]",
+         FontVariations->{"Underline"->True}], 
+        RowBox[{
+         StyleBox["\[ScriptCapitalI]",
+          FontSize->7,
+          FontSlant->"Plain"], 
+         StyleBox["(",
+          FontSlant->"Italic"], 
+         StyleBox[
+          RowBox[{"M", ",", "K"}],
+          FontSlant->"Italic"], 
+         StyleBox[")",
+          FontSlant->"Italic"]}]}]], 
+      RowBox[{"(", 
+       RowBox[{
+        UnderoverscriptBox["\[Product]", 
+         RowBox[{"j", "=", "1"}], "M"], 
+        SuperscriptBox[
+         SubscriptBox["D", "j"], 
+         SubscriptBox["n", "j"]]}], ")"}]}]]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], TraditionalForm], "\[IndentingNewLine]", 
+ FormBox[
+  StyleBox[
+   RowBox[{
+    RowBox[{"E", "[", 
+     RowBox[{
+      SubscriptBox[
+       OverscriptBox["R", "^"], "i"], "(", "K", ")"}], "]"}], "=", 
+    FractionBox[
+     RowBox[{
+      SubscriptBox["\[Sum]", 
+       RowBox[{
+        StyleBox["n",
+         FontVariations->{"Underline"->True}], "\[Element]", 
+        RowBox[{
+         StyleBox["\[ScriptCapitalI]",
+          FontSize->7,
+          FontSlant->"Plain"], 
+         StyleBox["(",
+          FontSlant->"Italic"], 
+         StyleBox[
+          RowBox[{"M", ",", "K"}],
+          FontSlant->"Italic"], 
+         StyleBox[")",
+          FontSlant->"Italic"]}]}]], 
+      RowBox[{"(", 
+       RowBox[{
+        SubscriptBox["n", "i"], 
+        RowBox[{
+         UnderoverscriptBox["\[Product]", 
+          RowBox[{"j", "=", "1"}], "M"], 
+         SuperscriptBox[
+          SubscriptBox["D", "j"], 
+          SubscriptBox["n", "j"]]}]}], ")"}]}], 
+     RowBox[{
+      SubscriptBox["\[Sum]", 
+       RowBox[{
+        StyleBox["n",
+         FontVariations->{"Underline"->True}], "\[Element]", 
+        RowBox[{
+         StyleBox["\[ScriptCapitalI]",
+          FontSize->7,
+          FontSlant->"Plain"], 
+         StyleBox["(",
+          FontSlant->"Italic"], 
+         StyleBox[
+          RowBox[{"M", ",", "K"}],
+          FontSlant->"Italic"], 
+         StyleBox[")",
+          FontSlant->"Italic"]}]}]], 
+      RowBox[{"(", 
+       RowBox[{
+        UnderoverscriptBox["\[Product]", 
+         RowBox[{"j", "=", "1"}], "M"], 
+        SuperscriptBox[
+         SubscriptBox["D", "j"], 
+         SubscriptBox["n", "j"]]}], ")"}]}]]}],
+   FontFamily->"Consolas",
+   FontSlant->"Italic"], 
+  TraditionalForm]}],ExpressionUUID->"75eef2ae-0580-4ace-922d-00679ca8d86f"]],\
+ "Text",
+ CellChangeTimes->{{3.757673960084856*^9, 
+  3.7576742996148796`*^9}},ExpressionUUID->"0fe6106b-d11f-44f3-9217-\
+c4475f97b0b2"],
+
+Cell[TextData[{
+ "The formulas can be applied with the ",
+ StyleBox["ExpectedResponseTimePerPassageFCFSFormula", "Input"],
+ " and the ",
+ StyleBox["ExpectedNumberOfCustomersFCFSFormula", "Input"],
+ " functions. There are two ways to call these functions.\n\nThe first way is \
+by using the queueing network and the total number of customers as arguments. \
+This applies the formula to all stations and returns a list of results. An \
+index argument can be added to apply the formula for a single station.\n\nThe \
+second way is using a list of service demands and the total number of \
+customers as arguments. This applies the formula to the first station. An \
+index argument can be added to apply the formula for a single station."
+}], "Text",
+ CellChangeTimes->{
+  3.7576743806868668`*^9},ExpressionUUID->"c83ef8f6-dd4e-42e5-a825-\
+3e62108cf340"],
+
+Cell[CellGroupData[{
+
+Cell["4.3.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.757674393169895*^9, 
+  3.7576743967549167`*^9}},ExpressionUUID->"82968bd8-8b25-4606-bb6e-\
+f83516daeeb9"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersFCFSFormula", "[", 
+  RowBox[{"twoFCFSnetwork", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757674421350865*^9, 3.7576744213868585`*^9}},
+ CellLabel->"In[48]:=",ExpressionUUID->"eb601ca8-387d-49cf-8b1d-eb3043ea1a39"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["s1", 
+    RowBox[{"s1", "+", "s2"}]], ",", 
+   FractionBox["s2", 
+    RowBox[{"s1", "+", "s2"}]]}], "}"}]], "Output",
+ CellChangeTimes->{3.757674422301859*^9},
+ CellLabel->"Out[48]=",ExpressionUUID->"1f17f358-d1f0-474c-8dff-026cb3fce0a8"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersFCFSFormula", "[", 
+  RowBox[{"variableNetwork", ",", "1", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576744288128653`*^9, 3.757674428851874*^9}},
+ CellLabel->"In[49]:=",ExpressionUUID->"589808e0-da0e-4010-a872-1d4aa82212a0"],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{"r32", " ", "s2"}], 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "1"}], "+", "r22"}], ")"}], " ", 
+    RowBox[{"(", 
+     RowBox[{"s1", "-", 
+      FractionBox[
+       RowBox[{"r32", " ", "s2"}], 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "r22"}]], "+", "s3"}], ")"}]}]]}]], "Output",
+ CellChangeTimes->{3.757674429703859*^9},
+ CellLabel->"Out[49]=",ExpressionUUID->"29fc0c0f-b426-4247-bb4a-f2d266dd8422"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersFCFSFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"d1", ",", "d2", ",", "d3"}], "}"}], ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576744409318647`*^9, 3.7576744409728594`*^9}},
+ CellLabel->"In[50]:=",ExpressionUUID->"7a6b0756-8c4f-448e-b25e-ea4fc7e689c8"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["d1", 
+    RowBox[{"d1", "+", "d2", "+", "d3"}]], ",", 
+   FractionBox["d2", 
+    RowBox[{"d1", "+", "d2", "+", "d3"}]], ",", 
+   FractionBox["d3", 
+    RowBox[{"d1", "+", "d2", "+", "d3"}]]}], "}"}]], "Output",
+ CellChangeTimes->{3.7576744415348797`*^9},
+ CellLabel->"Out[50]=",ExpressionUUID->"5332c264-a8cf-4e7f-a521-3bf9ea474eb3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersFCFSFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"d1", ",", "d2", ",", "d3"}], "}"}], ",", "1", ",", "2"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.757674448275874*^9, 3.7576744483188562`*^9}},
+ CellLabel->"In[51]:=",ExpressionUUID->"72e5034e-7164-4936-a578-76d462ec7bd0"],
+
+Cell[BoxData[
+ FractionBox["d2", 
+  RowBox[{"d1", "+", "d2", "+", "d3"}]]], "Output",
+ CellChangeTimes->{3.7576744490288577`*^9},
+ CellLabel->"Out[51]=",ExpressionUUID->"4a8dc386-1c02-4726-8566-ea2ef38838d5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSFormula", "[", 
+  RowBox[{"twoFCFSnetwork", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576744561778717`*^9, 3.7576744562158566`*^9}},
+ CellLabel->"In[52]:=",ExpressionUUID->"258d24a2-63b2-4fb5-9c21-9e4355445414"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"s1", ",", "s2"}], "}"}]], "Output",
+ CellChangeTimes->{3.7576744569968853`*^9},
+ CellLabel->"Out[52]=",ExpressionUUID->"0fc85de0-0f9a-4615-a3a4-7106f23a1e2a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSFormula", "[", 
+  RowBox[{"variableNetwork", ",", "1", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576744650599065`*^9, 3.7576744651018577`*^9}},
+ CellLabel->"In[53]:=",ExpressionUUID->"67f56b80-4848-469c-9df8-fc856753dd74"],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{"r32", " ", "s2"}], 
+   RowBox[{
+    RowBox[{"-", "1"}], "+", "r22"}]]}]], "Output",
+ CellChangeTimes->{3.7576744655218573`*^9},
+ CellLabel->"Out[53]=",ExpressionUUID->"1d005fc3-c226-4018-a501-440f74e86995"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"d1", ",", "d2", ",", "d3"}], "}"}], ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757674473363867*^9, 3.757674473398856*^9}},
+ CellLabel->"In[54]:=",ExpressionUUID->"ed3f384b-2e12-4399-bd4e-183da6dc4c05"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"d1", ",", "d2", ",", "d3"}], "}"}]], "Output",
+ CellChangeTimes->{3.7576744738768573`*^9},
+ CellLabel->"Out[54]=",ExpressionUUID->"4a1d300b-6cda-422d-958b-4e3013af4280"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"d1", ",", "d2", ",", "d3"}], "}"}], ",", "2", ",", "1"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.757674481764861*^9, 3.757674481797874*^9}},
+ CellLabel->"In[55]:=",ExpressionUUID->"6a2aa4aa-037b-451a-9507-2031dd921fae"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"2", " ", 
+    SuperscriptBox["d1", "2"]}], "+", 
+   RowBox[{"d1", " ", "d2"}], "+", 
+   RowBox[{"d1", " ", "d3"}]}], 
+  RowBox[{"d1", "+", "d2", "+", "d3"}]]], "Output",
+ CellChangeTimes->{3.757674482247893*^9},
+ CellLabel->"Out[55]=",ExpressionUUID->"992071b4-0d3b-4dc9-a429-6c42fdac2aff"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["4.4 Using the M FCFS and N IS formula", "Subsection",
+ CellChangeTimes->{
+  3.7576745150729094`*^9},ExpressionUUID->"b78c7ae6-cbe2-48dc-8207-\
+9722ac9e24b3"],
+
+Cell[TextData[{
+ "The following formulas for FCFS stations have been derived for queueing \
+networks with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["M",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "68de48b9-f0bc-402e-8a8d-030d97bc3e5c"],
+ " FCFS stations, ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["N",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "0f4e50be-98c6-4c3b-a3ea-207a29958b31"],
+ " IS stations and ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["K",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "e1503bfa-b28f-429f-b446-daf6688df2e9"],
+ " customers; with ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    SubscriptBox["D", "i"],
+    FontFamily->"Consolas",
+    FontSlant->"Italic"], TraditionalForm]],ExpressionUUID->
+  "9aa6738e-6eed-4cf5-93cc-4c8bf6a3c09c"],
+ " denoting the service demand of station ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["i",
+    FontFamily->"Consolas"], TraditionalForm]],ExpressionUUID->
+  "b37a2b3f-45ff-433d-b669-91b351568ec3"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["M",
+    FontFamily->"Consolas",
+    FontVariations->{"Underline"->True}], TraditionalForm]],ExpressionUUID->
+  "185d44d9-2e95-4e8a-8662-4eaa3f612128"],
+ " denoting the indices of the FCFS stations and ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox["N",
+    FontFamily->"Consolas",
+    FontVariations->{"Underline"->True}], TraditionalForm]],ExpressionUUID->
+  "f2ac5504-f80c-4c80-b689-09cf2126cc50"],
+ " denoting the indices of the IS stations:"
+}], "Text",
+ CellChangeTimes->{{3.7576745347688704`*^9, 
+  3.757674664398859*^9}},ExpressionUUID->"f175b6f0-06e2-46ae-9668-\
+85cb0f68bf40"],
+
+Cell[TextData[Cell[BoxData[{
+ FormBox[
+  RowBox[{
+   RowBox[{"E", "[", 
+    RowBox[{
+     SubscriptBox["N", "i"], "(", "K", ")"}], "]"}], "=", 
+   FractionBox[
+    RowBox[{
+     SubscriptBox["\[Sum]", 
+      RowBox[{
+       StyleBox["n",
+        FontVariations->{"Underline"->True}], "\[Element]", 
+       RowBox[{
+        StyleBox["\[ScriptCapitalI]",
+         FontSize->10,
+         FontSlant->"Plain"], 
+        StyleBox["(",
+         FontSlant->"Italic"], 
+        StyleBox[
+         RowBox[{"M", ",", "K"}],
+         FontSlant->"Italic"], 
+        StyleBox[")",
+         FontSlant->"Italic"]}]}]], 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"K", "!"}], "\[CenterDot]", 
+       SubscriptBox["n", "i"], "\[CenterDot]", 
+       RowBox[{
+        SubscriptBox["\[Product]", 
+         RowBox[{"j", "\[Element]", 
+          StyleBox["M",
+           FontVariations->{"Underline"->True}]}]], 
+        RowBox[{
+         RowBox[{"(", 
+          SuperscriptBox[
+           SubscriptBox["D", "j"], 
+           SubscriptBox["n", "j"]], ")"}], "\[CenterDot]", 
+         RowBox[{
+          SubscriptBox["\[Product]", 
+           RowBox[{"j", "\[Element]", 
+            StyleBox["N",
+             FontVariations->{"Underline"->True}]}]], 
+          RowBox[{"(", 
+           FractionBox[
+            SuperscriptBox[
+             SubscriptBox["D", "j"], 
+             SubscriptBox["n", "j"]], 
+            RowBox[{
+             SubscriptBox["n", "j"], "!"}]], ")"}]}]}]}]}], ")"}]}], 
+    RowBox[{
+     SubscriptBox["\[Sum]", 
+      RowBox[{
+       StyleBox["n",
+        FontVariations->{"Underline"->True}], "\[Element]", 
+       RowBox[{
+        StyleBox["\[ScriptCapitalI]",
+         FontSize->10,
+         FontSlant->"Plain"], 
+        StyleBox["(",
+         FontSlant->"Italic"], 
+        StyleBox[
+         RowBox[{"M", ",", "K"}],
+         FontSlant->"Italic"], 
+        StyleBox[")",
+         FontSlant->"Italic"]}]}]], 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"K", "!"}], "\[CenterDot]", 
+       RowBox[{
+        SubscriptBox["\[Product]", 
+         RowBox[{"j", "\[Element]", 
+          StyleBox["M",
+           FontVariations->{"Underline"->True}]}]], 
+        RowBox[{
+         RowBox[{"(", 
+          SuperscriptBox[
+           SubscriptBox["D", "j"], 
+           SubscriptBox["n", "j"]], ")"}], "\[CenterDot]", 
+         RowBox[{
+          SubscriptBox["\[Product]", 
+           RowBox[{"j", "\[Element]", 
+            StyleBox["N",
+             FontVariations->{"Underline"->True}]}]], 
+          RowBox[{"(", 
+           FractionBox[
+            SuperscriptBox[
+             SubscriptBox["D", "j"], 
+             SubscriptBox["n", "j"]], 
+            RowBox[{
+             SubscriptBox["n", "j"], "!"}]], ")"}]}]}]}]}], ")"}]}]]}], 
+  TraditionalForm], "\[IndentingNewLine]", 
+ FormBox[
+  RowBox[{
+   RowBox[{"E", "[", 
+    RowBox[{
+     SubscriptBox[
+      OverscriptBox["R", "^"], "i"], "(", "K", ")"}], "]"}], "=", 
+   FractionBox[
+    RowBox[{
+     SubscriptBox["\[Sum]", 
+      RowBox[{
+       StyleBox["n",
+        FontVariations->{"Underline"->True}], "\[Element]", 
+       RowBox[{
+        StyleBox["\[ScriptCapitalI]",
+         FontSize->10,
+         FontSlant->"Plain"], 
+        StyleBox["(",
+         FontSlant->"Italic"], 
+        StyleBox[
+         RowBox[{"M", ",", 
+          RowBox[{"K", "-", "1"}]}],
+         FontSlant->"Italic"], 
+        StyleBox[")",
+         FontSlant->"Italic"]}]}]], 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"K", "-", "1"}], ")"}], "!"}], "\[CenterDot]", 
+        RowBox[{"(", 
+         RowBox[{
+          SubscriptBox["n", "i"], "+", "1"}], ")"}]}], 
+       RowBox[{
+        SubscriptBox["D", "i"], "\[CenterDot]", 
+        RowBox[{
+         SubscriptBox["\[Product]", 
+          RowBox[{"j", "\[Element]", 
+           StyleBox["M",
+            FontVariations->{"Underline"->True}]}]], 
+         RowBox[{
+          RowBox[{"(", 
+           SuperscriptBox[
+            SubscriptBox["D", "j"], 
+            SubscriptBox["n", "j"]], ")"}], "\[CenterDot]", 
+          RowBox[{
+           SubscriptBox["\[Product]", 
+            RowBox[{"j", "\[Element]", 
+             StyleBox["N",
+              FontVariations->{"Underline"->True}]}]], 
+           RowBox[{"(", 
+            FractionBox[
+             SuperscriptBox[
+              SubscriptBox["D", "j"], 
+              SubscriptBox["n", "j"]], 
+             RowBox[{
+              SubscriptBox["n", "j"], "!"}]], ")"}]}]}]}]}]}], ")"}]}], 
+    RowBox[{
+     SubscriptBox["\[Sum]", 
+      RowBox[{
+       StyleBox["n",
+        FontVariations->{"Underline"->True}], "\[Element]", 
+       RowBox[{
+        StyleBox["\[ScriptCapitalI]",
+         FontSize->10,
+         FontSlant->"Plain"], 
+        StyleBox["(",
+         FontSlant->"Italic"], 
+        StyleBox[
+         RowBox[{"M", ",", 
+          RowBox[{"K", "-", "1"}]}],
+         FontSlant->"Italic"], 
+        StyleBox[")",
+         FontSlant->"Italic"]}]}]], 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"K", "-", "1"}], ")"}], "!"}], "\[CenterDot]", 
+       SubscriptBox["n", "i"], "\[CenterDot]", 
+       RowBox[{
+        SubscriptBox["\[Product]", 
+         RowBox[{"j", "\[Element]", 
+          StyleBox["M",
+           FontVariations->{"Underline"->True}]}]], 
+        RowBox[{
+         RowBox[{"(", 
+          SuperscriptBox[
+           SubscriptBox["D", "j"], 
+           SubscriptBox["n", "j"]], ")"}], "\[CenterDot]", 
+         RowBox[{
+          SubscriptBox["\[Product]", 
+           RowBox[{"j", "\[Element]", 
+            StyleBox["N",
+             FontVariations->{"Underline"->True}]}]], 
+          RowBox[{"(", 
+           FractionBox[
+            SuperscriptBox[
+             SubscriptBox["D", "j"], 
+             SubscriptBox["n", "j"]], 
+            RowBox[{
+             SubscriptBox["n", "j"], "!"}]], ")"}]}]}]}]}], ")"}]}]]}], 
+  TraditionalForm]}],
+ FontFamily->"Consolas",
+ FontSlant->
+  "Italic",ExpressionUUID->"98f0c136-08c8-401f-8770-3a9f52f4ff96"]], "Text",
+ CellChangeTimes->{{3.7576748410748587`*^9, 3.7576751696558695`*^9}, {
+  3.7577426088522778`*^9, 
+  3.757742658864438*^9}},ExpressionUUID->"9c82ddd2-ed28-423d-b40f-\
+97383ad92d06"],
+
+Cell[TextData[{
+ "The formulas can be applied with the ",
+ StyleBox["ExpectedResponseTimePerPassageFCFSAndISFormula", "Input"],
+ " and the ",
+ StyleBox["ExpectedNumberOfCustomersFCFSAndISFormula", "Input"],
+ " functions. There are two ways to call these functions.\n\nThe first way is \
+by using the queueing network and the total number of customers as arguments. \
+This applies the formula to all stations and returns a list of results. An \
+index argument can be added to apply the formula for a single station.\n\nThe \
+second way is using a list of service demands, a list of station scheduling \
+and the total number of customers as arguments. This applies the formula to \
+the first station. An index argument can be added to apply the formula for a \
+single station."
+}], "Text",
+ CellChangeTimes->{{3.7576752966349235`*^9, 3.757675327681905*^9}, {
+  3.75774286965455*^9, 3.757742869998342*^9}, {3.757742945154516*^9, 
+  3.75774294548263*^9}},ExpressionUUID->"29f6b020-cb4a-4408-8fe1-\
+fe3ae85238ad"],
+
+Cell[CellGroupData[{
+
+Cell["4.4.1 Examples", "Subsubsection",
+ CellChangeTimes->{{3.7576753317159166`*^9, 
+  3.757675335194869*^9}},ExpressionUUID->"aae447f6-aee2-48d9-a6c1-\
+c132b55c4813"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersFCFSAndISFormula", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576753456408815`*^9, 3.7576753456758566`*^9}},
+ CellLabel->"In[56]:=",ExpressionUUID->"0a845f8d-e4d4-46a3-935f-075833e506b3"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["2", "19"], ",", 
+   FractionBox["9", "19"], ",", 
+   FractionBox["16", "95"], ",", 
+   FractionBox["24", "95"]}], "}"}]], "Output",
+ CellChangeTimes->{3.757675346668857*^9},
+ CellLabel->"Out[56]=",ExpressionUUID->"595c8eab-ddd1-469c-8a59-8430d89a28ec"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSAndISFormula", "[", 
+  RowBox[{"twoFCFSnetwork", ",", "2", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757675354181877*^9, 3.757675354224863*^9}},
+ CellLabel->"In[57]:=",ExpressionUUID->"48cea2b7-9408-469c-8d34-5567311701dc"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"2", " ", 
+    SuperscriptBox["s1", "2"]}], "+", 
+   RowBox[{"s1", " ", "s2"}]}], 
+  RowBox[{"s1", "+", "s2"}]]], "Output",
+ CellChangeTimes->{3.757675354785864*^9},
+ CellLabel->"Out[57]=",ExpressionUUID->"a363090a-603c-41e7-95c2-340c59ea56a6"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersFCFSAndISFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"d1", ",", "d2"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"IS", ",", "FCFS"}], "}"}], ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576753636878757`*^9, 3.757675363736856*^9}},
+ CellLabel->"In[58]:=",ExpressionUUID->"fe316a75-32bd-4434-895c-9d1fc76d662e"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["d1", 
+    RowBox[{"d1", "+", "d2"}]], ",", 
+   FractionBox["d2", 
+    RowBox[{"d1", "+", "d2"}]]}], "}"}]], "Output",
+ CellChangeTimes->{3.757675365313859*^9},
+ CellLabel->"Out[58]=",ExpressionUUID->"b6eff954-c72b-4783-82df-032d88ea7ae8"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedNumberOfCustomersFCFSAndISFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"d1", ",", "d2", ",", "d3"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"IS", ",", "FCFS", ",", "FCFS"}], "}"}], ",", "1", ",", "2"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.7576753723128676`*^9, 3.7576753723538566`*^9}},
+ CellLabel->"In[59]:=",ExpressionUUID->"9c5f6644-b83d-4d45-bd9e-f4e2abc1806c"],
+
+Cell[BoxData[
+ FractionBox["d2", 
+  RowBox[{"d1", "+", "d2", "+", "d3"}]]], "Output",
+ CellChangeTimes->{3.757675372845864*^9},
+ CellLabel->"Out[59]=",ExpressionUUID->"0bb28673-44dc-403a-a6ae-c425fd34c430"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSAndISFormula", "[", 
+  RowBox[{"network", ",", "1"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757675381888859*^9, 3.757675381916856*^9}},
+ CellLabel->"In[60]:=",ExpressionUUID->"75b22bd3-72c3-4e06-9c3a-4a1b4113bebd"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"10", ",", "45", ",", "16", ",", "24"}], "}"}]], "Output",
+ CellChangeTimes->{3.757675382381858*^9},
+ CellLabel->"Out[60]=",ExpressionUUID->"49a0f675-4dba-4778-8e6b-338a5173cd26"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSAndISFormula", "[", 
+  RowBox[{"variableNetwork", ",", "1", ",", "2"}], "]"}]], "Input",
+ CellChangeTimes->{{3.757675388801875*^9, 3.757675408019867*^9}},
+ CellLabel->"In[62]:=",ExpressionUUID->"20484e3f-50c8-4cc2-82e2-7fe15e154212"],
+
+Cell[BoxData[
+ RowBox[{"-", 
+  FractionBox[
+   RowBox[{"r32", " ", "s2"}], 
+   RowBox[{
+    RowBox[{"-", "1"}], "+", "r22"}]]}]], "Output",
+ CellChangeTimes->{{3.7576753893708835`*^9, 3.7576754084678793`*^9}},
+ CellLabel->"Out[62]=",ExpressionUUID->"74920c78-93f9-4da9-ac9d-3eeadf89a4b3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSAndISFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"10", ",", "15"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"IS", ",", "FCFS"}], "}"}], ",", "4"}], "]"}]], "Input",
+ CellChangeTimes->{{3.7576754360229063`*^9, 3.7576754360638666`*^9}},
+ CellLabel->"In[63]:=",ExpressionUUID->"4101da7d-23ae-416e-8f25-4e793d6d38dd"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox["2590", "157"], ",", 
+   FractionBox["7890", "157"]}], "}"}]], "Output",
+ CellChangeTimes->{3.7576754369578576`*^9},
+ CellLabel->"Out[63]=",ExpressionUUID->"7281f69f-d3c5-44ca-8839-8410c04622a3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ExpectedResponseTimePerPassageFCFSAndISFormula", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"10", ",", "15", ",", "d3"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"IS", ",", "FCFS", ",", "IS"}], "}"}], ",", "2", ",", "2"}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.7576754438199167`*^9, 3.757675443867859*^9}},
+ CellLabel->"In[64]:=",ExpressionUUID->"3885228d-983d-43b2-a620-a6ff08832284"],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{"600", "+", 
+   RowBox[{"15", " ", "d3"}]}], 
+  RowBox[{"25", "+", "d3"}]]], "Output",
+ CellChangeTimes->{3.757675444724863*^9},
+ CellLabel->"Out[64]=",ExpressionUUID->"ee00ef1d-d20a-48d4-979f-fa52dff4a18a"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+ScreenStyleEnvironment->"Bulleted",
+PrintingStyleEnvironment->"Working",
+WindowSize->{958, 1028},
+WindowMargins->{{-7, Automatic}, {Automatic, 0}},
+FrontEndVersion->"11.3 for Microsoft Windows (64-bit) (March 6, 2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 157, 3, 96, "Title",ExpressionUUID->"ce5b3bf1-c552-47cf-a5cd-6c8faf50ffea"],
+Cell[740, 27, 489, 9, 56, "Text",ExpressionUUID->"73a482f4-496e-43c9-acfd-650d9040a5e0"],
+Cell[CellGroupData[{
+Cell[1254, 40, 156, 3, 67, "Chapter",ExpressionUUID->"8f9d8eaf-9ada-495c-a4dd-bd331610dd45"],
+Cell[1413, 45, 1081, 26, 56, "Text",ExpressionUUID->"c6ea3538-ca8b-470e-bb2f-c218cd75d7a2"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2531, 76, 154, 3, 67, "Chapter",ExpressionUUID->"584a788e-4e48-474b-8fe0-a85cee074097"],
+Cell[CellGroupData[{
+Cell[2710, 83, 158, 3, 67, "Section",ExpressionUUID->"290d8b86-561b-425d-9505-3baeb59a71d7"],
+Cell[CellGroupData[{
+Cell[2893, 90, 172, 3, 53, "Subsection",ExpressionUUID->"dd950bf4-a8e6-436c-9e77-a965fb765dd1"],
+Cell[3068, 95, 168, 3, 34, "Text",ExpressionUUID->"33c7e0c8-4fca-40b1-9f97-e6ad003f335d"],
+Cell[3239, 100, 205, 3, 28, "Input",ExpressionUUID->"e472b248-ff89-4b33-8b5c-9e3574451ac2"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3481, 108, 179, 3, 53, "Subsection",ExpressionUUID->"8b0a4904-c4b3-4ad8-a6b7-3e56adda4bdd"],
+Cell[3663, 113, 1568, 38, 254, "Text",ExpressionUUID->"104e9bbc-e22e-4b5c-83a2-c1ad31079ef0"],
+Cell[CellGroupData[{
+Cell[5256, 155, 1526, 45, 86, "Input",ExpressionUUID->"56c4ee0b-6ef8-463c-886b-08152449f81e"],
+Cell[6785, 202, 4506, 91, 198, "Output",ExpressionUUID->"c18fec9c-caad-4ad0-8a62-25e4ceb59fb9"]
+}, Open  ]],
+Cell[11306, 296, 216, 5, 34, "Text",ExpressionUUID->"4cd9d8d9-256d-49c8-9428-9b5b160ddcef"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11571, 307, 169, 3, 67, "Section",ExpressionUUID->"6a487448-3618-407d-8a6e-55dca9b728b6"],
+Cell[CellGroupData[{
+Cell[11765, 314, 188, 3, 53, "Subsection",ExpressionUUID->"9f04e953-e700-4c05-8cd0-b3e7d4ebc852"],
+Cell[11956, 319, 468, 11, 56, "Text",ExpressionUUID->"5b718144-0f7b-4ae4-8e77-77f529177011"],
+Cell[CellGroupData[{
+Cell[12449, 334, 165, 3, 44, "Subsubsection",ExpressionUUID->"46907f4a-fb61-42c3-bb85-e3dc07779c3c"],
+Cell[CellGroupData[{
+Cell[12639, 341, 217, 3, 28, "Input",ExpressionUUID->"d59048bb-80ff-4e1e-b10a-d440c8dca040"],
+Cell[12859, 346, 225, 4, 32, "Output",ExpressionUUID->"852a4f61-4162-4be1-817d-982f6c402807"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13121, 355, 238, 4, 28, "Input",ExpressionUUID->"4c4d836a-5ee7-4615-82c0-af5b1cea6179"],
+Cell[13362, 361, 151, 2, 32, "Output",ExpressionUUID->"34d78698-f3db-4e2a-bd5f-2ac6f8af1e95"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13574, 370, 182, 3, 53, "Subsection",ExpressionUUID->"e076a3c2-7a2c-4cff-a0ee-fddcb60d11c8"],
+Cell[13759, 375, 468, 11, 56, "Text",ExpressionUUID->"6f8cdf32-a897-49bb-af2b-1e57a5682cac"],
+Cell[CellGroupData[{
+Cell[14252, 390, 165, 3, 44, "Subsubsection",ExpressionUUID->"e3e23fb0-4b76-4d0b-8c1e-92e0b263dcc1"],
+Cell[CellGroupData[{
+Cell[14442, 397, 216, 3, 28, "Input",ExpressionUUID->"5003b6a5-f8a5-42e5-926b-9e8072a94f06"],
+Cell[14661, 402, 219, 4, 32, "Output",ExpressionUUID->"33541ac4-f22e-447d-85a0-3adbc4dc0b4b"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14917, 411, 237, 4, 28, "Input",ExpressionUUID->"a33ce553-ff0a-47ee-b5f6-6b203f9f7f29"],
+Cell[15157, 417, 151, 2, 32, "Output",ExpressionUUID->"c8de7c11-c2b1-4c79-b285-60f2f0b11e45"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15369, 426, 186, 3, 53, "Subsection",ExpressionUUID->"8560b7bb-2d77-4dd8-963b-20d1e27dbfe1"],
+Cell[15558, 431, 622, 12, 100, "Text",ExpressionUUID->"f2131b89-a440-4d35-934d-ced4ca7aa9bc"],
+Cell[CellGroupData[{
+Cell[16205, 447, 167, 3, 44, "Subsubsection",ExpressionUUID->"64d3e0d3-4a87-4a0f-aa99-f2bf4717057b"],
+Cell[CellGroupData[{
+Cell[16397, 454, 226, 3, 28, "Input",ExpressionUUID->"84ba7867-f0ab-4340-a8ed-f8000992a289"],
+Cell[16626, 459, 658, 18, 55, "Output",ExpressionUUID->"9895cae3-60ec-473c-895e-b8d13532c61d"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17321, 482, 210, 3, 28, "Input",ExpressionUUID->"487c457c-c88d-43df-88e4-9c8783b868d5"],
+Cell[17534, 487, 949, 29, 129, "Output",ExpressionUUID->"187323c5-5971-4dcf-8e4d-159669f2d783"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18520, 521, 245, 4, 28, "Input",ExpressionUUID->"016a7248-c826-4fac-a684-bba9b65f6c50"],
+Cell[18768, 527, 258, 6, 55, "Output",ExpressionUUID->"7b16f754-3623-474b-94c0-937e028a9bce"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19063, 538, 312, 5, 28, "Input",ExpressionUUID->"d9eae9d6-6d20-4d33-828c-48fd5d3ed99b"],
+Cell[19378, 545, 171, 3, 55, "Output",ExpressionUUID->"ce791bd2-28e7-44a4-9ec1-e472b141eaab"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19622, 556, 168, 3, 67, "Section",ExpressionUUID->"06b4f370-d732-408c-b1cf-e543d1d71d5d"],
+Cell[19793, 561, 200, 5, 34, "Text",ExpressionUUID->"3c54d43b-42e3-4860-bb04-6574a41b25fc"],
+Cell[CellGroupData[{
+Cell[20018, 570, 1131, 32, 86, "Input",ExpressionUUID->"0dbc95da-0f51-435d-bf9b-51afbf0a206b"],
+Cell[21152, 604, 3700, 72, 325, "Output",ExpressionUUID->"438553ef-3ef2-46a7-9015-183786d3c561"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[24889, 681, 278, 4, 53, "Subsection",ExpressionUUID->"f471ae6b-e326-4fc0-9a95-5d0db9568af5"],
+Cell[25170, 687, 1214, 26, 166, "Text",ExpressionUUID->"8636d3de-aef2-45ab-94cd-c71854b46f0a"],
+Cell[26387, 715, 289, 7, 28, "Input",ExpressionUUID->"2f14d1d5-82cf-4977-901c-77c8bc952e74"],
+Cell[CellGroupData[{
+Cell[26701, 726, 167, 3, 44, "Subsubsection",ExpressionUUID->"e58e7700-fd35-4830-9e5b-24845f71d9e5"],
+Cell[CellGroupData[{
+Cell[26893, 733, 214, 3, 28, "Input",ExpressionUUID->"dbfd9dc2-10f3-493c-bd40-4415c9f5f61e"],
+Cell[27110, 738, 283, 7, 55, "Output",ExpressionUUID->"37b9c664-54b3-474e-a13f-1694ce1c2ded"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27430, 750, 241, 4, 28, "Input",ExpressionUUID->"d6548e2a-74a7-4ad2-9b12-945b842f7fe0"],
+Cell[27674, 756, 169, 3, 55, "Output",ExpressionUUID->"b9a10964-3d6b-4cc5-916e-b66b51757570"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27880, 764, 222, 3, 28, "Input",ExpressionUUID->"ae7b28f7-b0a8-4589-8b66-a69d063621d0"],
+Cell[28105, 769, 298, 8, 55, "Output",ExpressionUUID->"06d0d12b-5f7d-45b1-a493-b690971433f6"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[28464, 784, 185, 3, 53, "Subsection",ExpressionUUID->"0810eb7a-7f05-4def-b33f-87469e26cef8"],
+Cell[28652, 789, 483, 11, 56, "Text",ExpressionUUID->"2e9b714a-0438-424e-b520-a4f60d5dfe83"],
+Cell[CellGroupData[{
+Cell[29160, 804, 169, 3, 44, "Subsubsection",ExpressionUUID->"7b2badc1-66bc-47ff-b865-d74b00714546"],
+Cell[CellGroupData[{
+Cell[29354, 811, 217, 3, 28, "Input",ExpressionUUID->"edf0883a-bffa-4f1b-a7ae-dd0bfeb9874f"],
+Cell[29574, 816, 218, 4, 32, "Output",ExpressionUUID->"7821933c-fd17-4112-b924-97ee7aab8cb7"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29829, 825, 244, 4, 28, "Input",ExpressionUUID->"24d28630-4b72-434a-8ac0-a262bac896db"],
+Cell[30076, 831, 152, 2, 32, "Output",ExpressionUUID->"a7038b61-6fed-4516-a3f7-b5086525e710"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30265, 838, 227, 3, 28, "Input",ExpressionUUID->"02f57295-9361-4677-8937-b0935f456f4b"],
+Cell[30495, 843, 327, 9, 55, "Output",ExpressionUUID->"6702f934-a514-4a6d-9a9d-d5176df90c9f"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[30883, 859, 181, 3, 53, "Subsection",ExpressionUUID->"933666dc-79c5-4dff-8437-6035a93834ff"],
+Cell[31067, 864, 400, 11, 34, "Text",ExpressionUUID->"e211f518-b4e2-43bf-b37c-795fcccea08f"],
+Cell[31470, 877, 659, 20, 45, "Text",ExpressionUUID->"0ae67d92-68b2-4844-9268-e1f8e8704b57"],
+Cell[32132, 899, 515, 11, 78, "Text",ExpressionUUID->"bc54c412-239a-4dd9-a815-e140d3cf0fae"],
+Cell[CellGroupData[{
+Cell[32672, 914, 167, 3, 44, "Subsubsection",ExpressionUUID->"6247abbe-8f68-4b9e-b0a9-8d304f15b1d5"],
+Cell[CellGroupData[{
+Cell[32864, 921, 241, 4, 28, "Input",ExpressionUUID->"c2b4d1d6-ae95-4bb5-9fbc-a752afbd977e"],
+Cell[33108, 927, 172, 3, 55, "Output",ExpressionUUID->"d029c34f-00eb-4280-a46e-0d3509aa0d71"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[33317, 935, 241, 4, 28, "Input",ExpressionUUID->"341d4739-a0fd-4044-aeb0-631fa1b8a096"],
+Cell[33561, 941, 176, 3, 55, "Output",ExpressionUUID->"38170bcf-720c-4de6-8002-f3ce2656bc08"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[33774, 949, 247, 4, 28, "Input",ExpressionUUID->"c65f784c-53b9-494c-90b4-401adc7770c3"],
+Cell[34024, 955, 304, 8, 67, "Output",ExpressionUUID->"5f6b314f-a448-45ca-9fe6-7dbca2fff2ca"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[34389, 970, 196, 3, 53, "Subsection",ExpressionUUID->"3e0aca93-a41e-4f51-89ee-cd9b9b412e91"],
+Cell[34588, 975, 477, 13, 34, "Text",ExpressionUUID->"264f2cd8-79ba-4847-99e9-44dc2d18cca2"],
+Cell[35068, 990, 668, 18, 41, "Text",ExpressionUUID->"f2a58b85-bed6-4488-8c9b-486d61d4e964"],
+Cell[35739, 1010, 580, 12, 78, "Text",ExpressionUUID->"2f2caadc-0203-4ed3-83e7-99c68948af30"],
+Cell[CellGroupData[{
+Cell[36344, 1026, 167, 3, 44, "Subsubsection",ExpressionUUID->"b94b0f31-7ce9-40ec-a343-6626d95e6301"],
+Cell[CellGroupData[{
+Cell[36536, 1033, 256, 4, 28, "Input",ExpressionUUID->"cd83a709-ecb7-4943-9105-65e9a1592292"],
+Cell[36795, 1039, 308, 8, 55, "Output",ExpressionUUID->"b205db44-e143-40b7-a1f9-663e94a2c3f5"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[37140, 1052, 256, 4, 28, "Input",ExpressionUUID->"be32a025-b221-46f2-9fc2-a23b4aebf270"],
+Cell[37399, 1058, 325, 8, 55, "Output",ExpressionUUID->"bc849613-090f-4e90-9c7c-4625c987c32f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[37761, 1071, 266, 4, 28, "Input",ExpressionUUID->"6dd12876-72a0-4267-8f16-aa09d5fe57a8"],
+Cell[38030, 1077, 170, 3, 55, "Output",ExpressionUUID->"faae828f-48ee-4a7d-8223-6cea48b08f60"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[38237, 1085, 274, 4, 28, "Input",ExpressionUUID->"f875e0c4-7d0a-4191-a121-11450daf75cb"],
+Cell[38514, 1091, 305, 8, 67, "Output",ExpressionUUID->"4a986386-78ae-4139-a9ef-a6657ff90466"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[38880, 1106, 190, 3, 53, "Subsection",ExpressionUUID->"90ad6c07-56ff-428d-adb5-6c53710d7210"],
+Cell[39073, 1111, 1166, 30, 56, "Text",ExpressionUUID->"5016f58c-2b48-4ca5-ac13-452ae2b04574"],
+Cell[40242, 1143, 3974, 147, 57, "Text",ExpressionUUID->"a6c6cc55-9264-44c3-8535-950d18af048a"],
+Cell[44219, 1292, 553, 11, 78, "Text",ExpressionUUID->"ad50ca3e-42f0-45ce-b8f0-f6327006f03c"],
+Cell[CellGroupData[{
+Cell[44797, 1307, 165, 3, 44, "Subsubsection",ExpressionUUID->"1ebce5be-5df4-4924-9665-61aade77ab14"],
+Cell[CellGroupData[{
+Cell[44987, 1314, 245, 4, 28, "Input",ExpressionUUID->"6742cc86-fec5-4424-8824-2fa56a2056bb"],
+Cell[45235, 1320, 220, 4, 32, "Output",ExpressionUUID->"84cd69e8-a02a-4c17-a661-fa55f7de2b55"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[45492, 1329, 251, 4, 28, "Input",ExpressionUUID->"a48df212-2074-4c5c-bca8-dd3369fd93ae"],
+Cell[45746, 1335, 294, 7, 55, "Output",ExpressionUUID->"7f29710e-e577-4179-bd49-912889b33b49"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[46077, 1347, 259, 4, 28, "Input",ExpressionUUID->"16d2b6ea-6c5e-42c8-ae57-8e40e756777c"],
+Cell[46339, 1353, 151, 2, 32, "Output",ExpressionUUID->"2d62f49c-7f77-4328-b4ae-b7b376f1d858"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[46527, 1360, 267, 4, 28, "Input",ExpressionUUID->"cc5e74d5-769f-4f03-ab8e-06d226a398d8"],
+Cell[46797, 1366, 569, 18, 77, "Output",ExpressionUUID->"06cd0a61-b4ba-425a-b9f5-c5165dbf2663"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[47427, 1391, 180, 3, 53, "Subsection",ExpressionUUID->"c3ffef83-ecda-46fe-8484-8e9fec285c56"],
+Cell[47610, 1396, 888, 27, 56, "Text",ExpressionUUID->"7cab1e7f-5a61-4f8d-991d-6d71e7eb434c"],
+Cell[48501, 1425, 612, 19, 39, "Text",ExpressionUUID->"ea440d33-e434-4b77-a0c6-68748d56a6d8"],
+Cell[49116, 1446, 585, 12, 100, "Text",ExpressionUUID->"8131cc36-a0cf-43bc-8311-c6b5fa461813"],
+Cell[CellGroupData[{
+Cell[49726, 1462, 169, 3, 44, "Subsubsection",ExpressionUUID->"22818529-02c6-4a1d-855d-17523692f36e"],
+Cell[CellGroupData[{
+Cell[49920, 1469, 261, 4, 28, "Input",ExpressionUUID->"6dbe8901-199e-43be-bd1d-d79a698a5ac6"],
+Cell[50184, 1475, 218, 4, 32, "Output",ExpressionUUID->"662cc9c7-2eeb-4fd0-ad45-9d023504891b"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[50439, 1484, 261, 4, 28, "Input",ExpressionUUID->"2539e1b0-2eaf-4e7e-a7c3-e4d068ae265b"],
+Cell[50703, 1490, 294, 7, 55, "Output",ExpressionUUID->"c5ffc491-5e91-405f-a113-4bc3c878531a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[51034, 1502, 271, 4, 28, "Input",ExpressionUUID->"d6a21d27-8020-4a65-8e3d-d8e3badc79ff"],
+Cell[51308, 1508, 152, 2, 32, "Output",ExpressionUUID->"7acc944a-aede-436d-a74c-e784d57f43fc"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[51497, 1515, 277, 4, 28, "Input",ExpressionUUID->"97c38153-6e2f-435d-ac84-773a7bb28ec8"],
+Cell[51777, 1521, 697, 22, 85, "Output",ExpressionUUID->"db2a9b54-6fe6-48ad-9d76-7ef75132ddd0"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[52547, 1551, 170, 3, 67, "Section",ExpressionUUID->"6130e7ac-bdec-4dfc-8987-3ce45747bbc7"],
+Cell[52720, 1556, 198, 5, 34, "Text",ExpressionUUID->"5e471103-3c5a-4847-a34a-a05f1da4fd9b"],
+Cell[CellGroupData[{
+Cell[52943, 1565, 753, 21, 86, "Input",ExpressionUUID->"87e24410-61c3-42e5-a87c-efbbe12c2049"],
+Cell[53699, 1588, 1951, 41, 141, "Output",ExpressionUUID->"6e8df645-e9d6-4cc3-8baf-9f499639bc14"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[55687, 1634, 181, 3, 53, "Subsection",ExpressionUUID->"4f71355f-9e61-4b64-a0ff-88bee5140afc"],
+Cell[55871, 1639, 563, 17, 34, "Text",ExpressionUUID->"c6095af4-ae12-49a2-8d64-3f87de711d57"],
+Cell[56437, 1658, 997, 30, 37, "Text",ExpressionUUID->"ec877abd-ed8c-410b-9d66-01ca9a78d02d"],
+Cell[57437, 1690, 389, 10, 56, "Text",ExpressionUUID->"9aa411de-e1f8-4511-9449-b41e92ba958a"],
+Cell[CellGroupData[{
+Cell[57851, 1704, 167, 3, 44, "Subsubsection",ExpressionUUID->"9a0801ba-e13e-4f9a-939d-30f355717b10"],
+Cell[CellGroupData[{
+Cell[58043, 1711, 233, 4, 28, "Input",ExpressionUUID->"dc69f4b9-c491-4db7-ab3c-eb1432155c66"],
+Cell[58279, 1717, 588, 16, 32, "Output",ExpressionUUID->"5e2eba67-4e0f-424d-943c-20cffaa3deb5"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[58904, 1738, 231, 4, 28, "Input",ExpressionUUID->"ef9ee61e-1bfa-4f80-ac04-ca454a1d6bea"],
+Cell[59138, 1744, 412, 12, 32, "Output",ExpressionUUID->"1a11f938-7a58-45b3-a150-bffc43426031"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[59611, 1763, 154, 3, 53, "Subsection",ExpressionUUID->"4892fed2-cb02-45bb-9f62-bbd8465f0da1"],
+Cell[59768, 1768, 846, 26, 56, "Text",ExpressionUUID->"333c5d51-3c94-4c5e-8a61-3ebcd5039755"],
+Cell[60617, 1796, 2085, 70, 98, "Text",ExpressionUUID->"cca62240-973f-4beb-9ee9-943fe90de53f"],
+Cell[62705, 1868, 839, 14, 188, "Text",ExpressionUUID->"93046efb-890c-48b1-ac3c-058f443fa69f"],
+Cell[CellGroupData[{
+Cell[63569, 1886, 167, 3, 44, "Subsubsection",ExpressionUUID->"824a4a85-e64c-436e-9c64-c980362461c3"],
+Cell[CellGroupData[{
+Cell[63761, 1893, 273, 4, 28, "Input",ExpressionUUID->"ff469d87-e785-4040-9163-52209204e5db"],
+Cell[64037, 1899, 296, 8, 55, "Output",ExpressionUUID->"bf6f31af-ccf1-485d-95ea-9e0bce0ed8f1"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[64370, 1912, 285, 4, 28, "Input",ExpressionUUID->"38f2375b-d0b6-4946-9538-fe150cbb1ea0"],
+Cell[64658, 1918, 382, 11, 61, "Output",ExpressionUUID->"c6cd57e6-3be4-4a32-8d9a-89cab861ef7c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[65077, 1934, 274, 4, 28, "Input",ExpressionUUID->"dc556f03-ae18-4c60-ad27-7d00b5e35699"],
+Cell[65354, 1940, 380, 11, 61, "Output",ExpressionUUID->"b53f99fe-52dd-420d-bdcc-eb591e9f69f5"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[65771, 1956, 280, 4, 28, "Input",ExpressionUUID->"7b60a4a8-28c1-43de-b8a4-382f4b0c2e9e"],
+Cell[66054, 1962, 196, 4, 32, "Output",ExpressionUUID->"c52b1607-61c9-4b67-acb8-17d33703930c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[66287, 1971, 290, 4, 28, "Input",ExpressionUUID->"2877f14a-4e57-45fe-90e9-35430547f402"],
+Cell[66580, 1977, 294, 8, 58, "Output",ExpressionUUID->"b4057d52-3742-4b0b-9f0f-8c6fafb80ee0"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[66911, 1990, 281, 4, 28, "Input",ExpressionUUID->"a8b2fced-238b-497d-8564-0ca31e2704f7"],
+Cell[67195, 1996, 294, 8, 58, "Output",ExpressionUUID->"b6151aa1-c6fc-4928-99d5-4380dbe8cb91"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[67550, 2011, 154, 3, 53, "Subsection",ExpressionUUID->"7b99f1ea-2a7e-40cc-88d0-39a5f46fc780"],
+Cell[67707, 2016, 973, 31, 56, "Text",ExpressionUUID->"45f5fac1-d9a0-4099-8b88-5fa42342a0e7"],
+Cell[68683, 2049, 3627, 122, 101, "Text",ExpressionUUID->"0fe6106b-d11f-44f3-9217-c4475f97b0b2"],
+Cell[72313, 2173, 849, 15, 188, "Text",ExpressionUUID->"c83ef8f6-dd4e-42e5-a825-3e62108cf340"],
+Cell[CellGroupData[{
+Cell[73187, 2192, 167, 3, 44, "Subsubsection",ExpressionUUID->"82968bd8-8b25-4606-bb6e-f83516daeeb9"],
+Cell[CellGroupData[{
+Cell[73379, 2199, 272, 4, 28, "Input",ExpressionUUID->"eb601ca8-387d-49cf-8b1d-eb3043ea1a39"],
+Cell[73654, 2205, 294, 8, 55, "Output",ExpressionUUID->"1f17f358-d1f0-474c-8dff-026cb3fce0a8"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[73985, 2218, 283, 4, 28, "Input",ExpressionUUID->"589808e0-da0e-4010-a872-1d4aa82212a0"],
+Cell[74271, 2224, 486, 15, 69, "Output",ExpressionUUID->"29fc0c0f-b426-4247-bb4a-f2d266dd8422"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[74794, 2244, 323, 6, 28, "Input",ExpressionUUID->"7a6b0756-8c4f-448e-b25e-ea4fc7e689c8"],
+Cell[75120, 2252, 389, 10, 56, "Output",ExpressionUUID->"5332c264-a8cf-4e7f-a521-3bf9ea474eb3"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[75546, 2267, 334, 7, 28, "Input",ExpressionUUID->"72e5034e-7164-4936-a578-76d462ec7bd0"],
+Cell[75883, 2276, 208, 4, 56, "Output",ExpressionUUID->"4a8dc386-1c02-4726-8566-ea2ef38838d5"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[76128, 2285, 279, 4, 28, "Input",ExpressionUUID->"258d24a2-63b2-4fb5-9c21-9e4355445414"],
+Cell[76410, 2291, 198, 4, 32, "Output",ExpressionUUID->"0fc85de0-0f9a-4615-a3a4-7106f23a1e2a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[76645, 2300, 290, 4, 28, "Input",ExpressionUUID->"67f56b80-4848-469c-9df8-fc856753dd74"],
+Cell[76938, 2306, 262, 7, 55, "Output",ExpressionUUID->"1d005fc3-c226-4018-a501-440f74e86995"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[77237, 2318, 324, 6, 28, "Input",ExpressionUUID->"ed3f384b-2e12-4399-bd4e-183da6dc4c05"],
+Cell[77564, 2326, 209, 4, 32, "Output",ExpressionUUID->"4a1d300b-6cda-422d-958b-4e3013af4280"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[77810, 2335, 337, 7, 28, "Input",ExpressionUUID->"6a2aa4aa-037b-451a-9507-2031dd921fae"],
+Cell[78150, 2344, 341, 9, 58, "Output",ExpressionUUID->"992071b4-0d3b-4dc9-a429-6c42fdac2aff"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[78552, 2360, 163, 3, 53, "Subsection",ExpressionUUID->"b78c7ae6-cbe2-48dc-8207-9722ac9e24b3"],
+Cell[78718, 2365, 1643, 52, 78, "Text",ExpressionUUID->"f175b6f0-06e2-46ae-9668-85cb0f68bf40"],
+Cell[80364, 2419, 6245, 200, 125, "Text",ExpressionUUID->"9c82ddd2-ed28-423d-b40f-97383ad92d06"],
+Cell[86612, 2621, 1008, 17, 188, "Text",ExpressionUUID->"29f6b020-cb4a-4408-8fe1-fe3ae85238ad"],
+Cell[CellGroupData[{
+Cell[87645, 2642, 167, 3, 44, "Subsubsection",ExpressionUUID->"aae447f6-aee2-48d9-a6c1-c132b55c4813"],
+Cell[CellGroupData[{
+Cell[87837, 2649, 272, 4, 28, "Input",ExpressionUUID->"0a845f8d-e4d4-46a3-935f-075833e506b3"],
+Cell[88112, 2655, 308, 8, 55, "Output",ExpressionUUID->"595c8eab-ddd1-469c-8a59-8430d89a28ec"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[88457, 2668, 290, 4, 28, "Input",ExpressionUUID->"48cea2b7-9408-469c-8d34-5567311701dc"],
+Cell[88750, 2674, 294, 8, 58, "Output",ExpressionUUID->"a363090a-603c-41e7-95c2-340c59ea56a6"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[89081, 2687, 378, 8, 28, "Input",ExpressionUUID->"fe316a75-32bd-4434-895c-9d1fc76d662e"],
+Cell[89462, 2697, 294, 8, 56, "Output",ExpressionUUID->"b6eff954-c72b-4783-82df-032d88ea7ae8"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[89793, 2710, 417, 9, 28, "Input",ExpressionUUID->"9c5f6644-b83d-4d45-bd9e-f4e2abc1806c"],
+Cell[90213, 2721, 206, 4, 56, "Output",ExpressionUUID->"0bb28673-44dc-403a-a6ae-c425fd34c430"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[90456, 2730, 273, 4, 28, "Input",ExpressionUUID->"75b22bd3-72c3-4e06-9c3a-4a1b4113bebd"],
+Cell[90732, 2736, 218, 4, 32, "Output",ExpressionUUID->"49a0f675-4dba-4778-8e6b-338a5173cd26"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[90987, 2745, 291, 4, 28, "Input",ExpressionUUID->"20484e3f-50c8-4cc2-82e2-7fe15e154212"],
+Cell[91281, 2751, 288, 7, 55, "Output",ExpressionUUID->"74920c78-93f9-4da9-ac9d-3eeadf89a4b3"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[91606, 2763, 385, 8, 28, "Input",ExpressionUUID->"4101da7d-23ae-416e-8f25-4e793d6d38dd"],
+Cell[91994, 2773, 250, 6, 55, "Output",ExpressionUUID->"7281f69f-d3c5-44ca-8839-8410c04622a3"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[92281, 2784, 418, 9, 28, "Input",ExpressionUUID->"3885228d-983d-43b2-a620-a6ff08832284"],
+Cell[92702, 2795, 245, 6, 56, "Output",ExpressionUUID->"ee00ef1d-d20a-48d4-979f-fa52dff4a18a"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
