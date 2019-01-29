@@ -1,10 +1,6 @@
 # MathematicaMVA
 MathematicaMVA is a Mathematica package implementing mean-value analysis (MVA) for closed queueing networks in Mathematica. It has been used for researching alternative MVA formulas which also have been implemented in the package.
 
-## Installation
-- Download the [QueueingNetworks.wl](https://github.com/meteoorkip/MathematicaMVA/raw/master/QueueingNetworks.wl "Right click->save as...") file.
-- Install it as described on [support.wolfram.com/kb/5648](http://support.wolfram.com/kb/5648).
-
 ## Usage
 :information_source: For a version of this README with interactive examples open the [README.nb](https://github.com/meteoorkip/MathematicaMVA/raw/master/README.nb "Right click->save as...") file in Mathematica.
 
@@ -33,7 +29,7 @@ MathematicaMVA is a Mathematica package implementing mean-value analysis (MVA) f
 #### 1.1 Load the package
 Load the package by using:
 ```Mathematica
-<< QueueingNetworks`
+Get["https://github.com/meteoorkip/MathematicaMVA/raw/master/QueueingNetworks.wl"]
 ```
 
 #### 1.2 Creating a queueing network
