@@ -2,7 +2,7 @@
 MathematicaMVA is a Mathematica package implementing mean-value analysis (MVA) for closed queueing networks in Mathematica. It has been used for researching alternative MVA formulas which also have been implemented in the package.
 
 ## Usage
-:information_source: For a version of this README with interactive examples open the [README.nb](https://github.com/meteoorkip/MathematicaMVA/raw/master/README.nb "Right click->save as...") file in Mathematica.
+:information_source: For a version of this README with interactive examples open the [README.nb](https://github.com/svenkonings/MathematicaMVA/raw/master/README.nb "Right click->save as...") file in Mathematica.
 
 + [1. Basics](#1-basics)
     - [1.1 Load the package](#11-load-the-package)
@@ -29,7 +29,7 @@ MathematicaMVA is a Mathematica package implementing mean-value analysis (MVA) f
 #### 1.1 Load the package
 Load the package by using:
 ```Mathematica
-Get["https://github.com/meteoorkip/MathematicaMVA/raw/master/QueueingNetworks.wl"]
+Get["https://github.com/svenkonings/MathematicaMVA/raw/master/QueueingNetworks.wl"]
 ```
 
 #### 1.2 Creating a queueing network
@@ -48,7 +48,7 @@ network = QueueingNetwork[
 ```
 Which yields the following queueing network:
 
-![Example queueing network](https://github.com/meteoorkip/MathematicaMVA/raw/master/images/network1.svg?sanitize=true "Example queueing network")
+![Example queueing network](https://github.com/svenkonings/MathematicaMVA/raw/master/images/network1.svg?sanitize=true "Example queueing network")
 
 We will continue to use this queueing network and refer to it as `network` in the examples.
 
@@ -103,7 +103,7 @@ variableNetwork = QueueingNetwork[
 ```
 Which yields the following network:
 
-![Example queueing network with variables](https://github.com/meteoorkip/MathematicaMVA/raw/master/images/network2.svg?sanitize=true "Example queueing network with variables")
+![Example queueing network with variables](https://github.com/svenkonings/MathematicaMVA/raw/master/images/network2.svg?sanitize=true "Example queueing network with variables")
 
 We will refer to this network as `variableNetwork` in the examples.
 
@@ -239,7 +239,7 @@ twoFCFSnetwork = QueueingNetwork[
 ```
 Which yields the following network:
 
-![Example queueing network with variables](https://github.com/meteoorkip/MathematicaMVA/raw/master/images/network3.svg?sanitize=true "Example queueing network with two FCFS stations")
+![Example queueing network with variables](https://github.com/svenkonings/MathematicaMVA/raw/master/images/network3.svg?sanitize=true "Example queueing network with two FCFS stations")
 
 We will refer to this network as `twoFCFSnetwork` in the examples.
 
