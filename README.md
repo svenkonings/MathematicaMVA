@@ -145,9 +145,9 @@ Out[3] = {s1, -((r32 s2)/(-1 + r22)), s3}
 ```
 
 #### 3.3 Calculating the throughput
-The throughput is calculated using the following formula, in a queueing network with <img src="https://latex.codecogs.com/svg.latex?M" alt="M"/> stations and <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers:
+The throughput is calculated using the following formula, in a queueing network with $M$ stations and $K$ customers:
 
-<img src="https://latex.codecogs.com/svg.latex?X(K)=K\cdot\frac{1}{\sum^M_{i=1}E[\hat{R}_i(K)]}" alt="X(K)=K\cdot\frac{1}{\sum^M_{i=1}E[\hat{R}_i(K)]}"/>
+$$X(K) = K \cdot \frac{1}{\sum\limits^{M}\_{i=1} E[\hat{R}\_i(K)]}$$
 
 The throughput of the whole queueing network can be calculated using the `Throughput` function. The `Throughput` function requires a queueing network and the total number of customers as arguments. The result can be a number or, if there are free variables in the queueing network, an expression.
 
@@ -164,9 +164,9 @@ Out[3] = 1/(s1 - (r32 s2)/(-1 + r22) + s3)
 ```
 
 #### 3.4 Calculating the expected number of customers
-The expected number of customers is calculated using the following formula, in a queueing network with <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers:
+The expected number of customers is calculated using the following formula, in a queueing network with $K$ customers:
 
-<img src="https://latex.codecogs.com/svg.latex?E[N_i(K)]=X(K)\cdot&space;E[\hat{R}_i(K)]" alt="E[N_i(K)]=X(K)\cdot&space;E[\hat{R}_i(K)]"/>
+$$E[N\_i(K)] = X(K) \cdot E[\hat{R}\_i(K)]$$
 
 The expected number of customers can be calculated using the `ExpectedNumberOfCustomers` function. The `ExpectedNumberOfCustomers` function requires a queueing network and the total number of customers as arguments and yields a list of expected customer counts. An index argument can be added to calculate the expected number of customers of a single station.
 
@@ -186,9 +186,14 @@ Out[4] = s1/(s1 - (r32 s2)/(-1 + r22) + s3)
 ```
 
 #### 3.5 Calculating the expected response time
-The expected response time is calculated using the following formula, in a queueing network with <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers; with <img src="https://latex.codecogs.com/svg.latex?E[S_i]" alt="E[S_i]"/> denoting the service time of station <img src="https://latex.codecogs.com/svg.latex?i" alt="i"/>:
+The expected response time is calculated using the following formula, in a queueing network with $K$ customers; with $E[S\_i]$ denoting the service time of station $i$:
 
-<img src="https://latex.codecogs.com/svg.latex?\begin{align*}\text{FCFS:&space;}E[R_i(K)]&=(E[N_i(K-1)]&plus;1)\cdot&space;E[S_i]\\\text{IS:&space;}E[R_i(K)]&=E[S_i]\end{align*}" alt="\begin{align*}\text{FCFS:&space;}E[R_i(K)]&=(E[N_i(K-1)]&plus;1)\cdot&space;E[S_i]\\\text{IS:&space;}E[R_i(K)]&=E[S_i]\end{align*}"/>
+$$
+\begin{align*}
+\text{FCFS: } E[R\_i(K)] & = (E[N\_i(K-1)] + 1) \cdot E[S\_i]\\
+\text{IS: } E[R\_i(K)] & = E[S\_i]
+\end{align*}
+$$
 
 The expected response time can be calculated using the `ExpectedResponseTime` function. The `ExpectedResponseTime` function requires a queueing network and the total number of customers as arguments and yields a list of expected response times. An index argument can be added to calculate the expected response time of a single station.
 
@@ -208,9 +213,9 @@ Out[4] = s2 (1 - (r32 s2)/((-1 + r22) (s1 - (r32 s2)/(-1 + r22) + s3)))
 ```
 
 #### 3.6 Calculating the expected response time per passage
-The expected response time per passage is calculated using the following formula, in a queueing network with <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers; with <img src="https://latex.codecogs.com/svg.latex?V_i" alt="V_i"/> denoting the visit count of station <img src="https://latex.codecogs.com/svg.latex?i" alt="i"/>:
+The expected response time per passage is calculated using the following formula, in a queueing network with $K$ customers; with $V\_i$ denoting the visit count of station $i$:
 
-<img src="https://latex.codecogs.com/svg.latex?E[\hat{R}_i(K)]=E[R_i(K)]\cdot&space;V_i" alt="E[\hat{R}_i(K)]=E[R_i(K)]\cdot&space;V_i"/>
+$$E[\hat{R}\_i(K)] = E[R\_i(K)] \cdot V\_i$$
 
 The expected response time per passage can be calculated using the `ExpectedResponseTimePerPassage` function. The `ExpectedResponseTimePerPassage` function requires a queueing network and the total number of customers as arguments and yields a list of expected response times per passage. An index argument can be added to calculate the expected response time per passage of a single station.
 
@@ -244,9 +249,9 @@ Which yields the following network:
 We will refer to this network as `twoFCFSnetwork` in the examples.
 
 #### 4.1 Calculating the state space
-The state space uses the following formula, in a queueing network with <img src="https://latex.codecogs.com/svg.latex?M" alt="M"/> stations and <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers:
+The state space uses the following formula, in a queueing network with $M$ stations and $K$ customers:
 
-<img src="https://latex.codecogs.com/svg.latex?\mathcal{I}(M,K)=\{(n_1&plus;\dotsb&plus;n_m)\in\mathbb{N}^M|\sum^M_{i=1}n_i=K\}" alt="\mathcal{I}(M,K)=\{(n_1&plus;\dotsb&plus;n_m)\in\mathbb{N}^M|\sum^M_{i=1}n_i=K\}"/>
+$$\mathcal{I}(M,K) = \\{(n\_1 + \dotsb + n\_m) \in \mathbb{N}^M | \sum\limits^M\_{i=1} n\_i = K\\}$$
 
 The state space can be calculated using the `StateSpace` function. The `StateSpace` function requires the number of station and the total number of customers as arguments and yields the state space.
 
@@ -260,9 +265,14 @@ Out[2] = {{3, 0}, {0, 3}, {2, 1}, {1, 2}}
 ```
 
 #### 4.2 Using the 2 FCFS formula
-The following formulas have been derived for queueing networks with 2 FCFS stations and <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers; with <img src="https://latex.codecogs.com/svg.latex?D_i" alt="D_i"/> denoting the service demand of station <img src="https://latex.codecogs.com/svg.latex?i" alt="i"/>:
+The following formulas have been derived for queueing networks with 2 FCFS stations and $K$ customers; with $D\_i$ denoting the service demand of station $i$:
 
-<img src="https://latex.codecogs.com/svg.latex?\begin{align*}E[N_a(K)]&=\frac{\sum^K_{i=0}((K-i){D_a}^{K-1}{D_b}^i)}{\sum^K_{j=0}({D_a}^{K-j}{D_b}^j)}\\E[\hat{R}_a(K)]&=\frac{\sum^K_{i=0}((K-i){D_a}^{K-i}{D_b}^i)}{\sum^{K-1}_{j=0}({D_a}^{K-1-j}{D_b}^j)}\end{align*}" alt="\begin{align*}E[N_a(K)]&=\frac{\sum^K_{i=0}((K-i){D_a}^{K-1}{D_b}^i)}{\sum^K_{j=0}({D_a}^{K-j}{D_b}^j)}\\E[\hat{R}_a(K)]&=\frac{\sum^K_{i=0}((K-i){D_a}^{K-i}{D_b}^i)}{\sum^{K-1}_{j=0}({D_a}^{K-1-j}{D_b}^j)}\end{align*}"/>
+$$
+\begin{align*}
+E[N\_a(K)] &= \frac{\sum\limits^K\_{i=0} ((K-i) {D\_a}^{K-1} {D\_b}^i)}{\sum\limits^K\_{j=0} ({D\_a}^{K-j} {D\_b}^j)}\\
+E[\hat{R}\_a(K)] &= \frac{\sum\limits^K\_{i=0} ((K-i) {D\_a}^{K-i} {D\_b}^i)}{\sum\limits^{K-1}\_{j=0} ({D\_a}^{K-1-j} {D\_b}^j)}
+\end{align*}
+$$
 
 The formulas can be applied with the `ExpectedResponseTimePerPassageTwoFCFSFormula` and the `ExpectedNumberOfCustomersTwoFCFSFormula` functions. There are two ways to call these functions.
 
@@ -292,9 +302,14 @@ Out[6] = (2 d1^2 + d1 d2)/(d1 + d2)
 ```
 
 #### 4.3 Using the M FCFS formula
-The following formulas have been derived for queueing networks with <img src="https://latex.codecogs.com/svg.latex?M" alt="M"/> FCFS stations and <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers; with <img src="https://latex.codecogs.com/svg.latex?D_i" alt="D_i"/> denoting the service demand of station <img src="https://latex.codecogs.com/svg.latex?i" alt="i"/>:
+The following formulas have been derived for queueing networks with $M$ FCFS stations and $K$ customers; with $D\_i$ denoting the service demand of station $i$:
 
-<img src="https://latex.codecogs.com/svg.latex?\begin{align*}E[N_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K)}(n_i\prod^M_{j=1}{D_j}^{n_j})}{\sum_{\underline{n}\in\mathcal{I}(M,K)}(\prod^M_{j=1}{D_j}^{n_j})}\\E[\hat{R}_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K)}(n_i\prod^M_{j=1}{D_j}^{n_j})}{\sum_{\underline{n}\in\mathcal{I}(M,K-1)}(\prod^M_{j=1}{D_j}^{n_j})}\end{align*}" alt="\begin{align*}E[N_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K)}(n_i\prod^M_{j=1}{D_j}^{n_j})}{\sum_{\underline{n}\in\mathcal{I}(M,K)}(\prod^M_{j=1}{D_j}^{n_j})}\\E[\hat{R}_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K)}(n_i\prod^M_{j=1}{D_j}^{n_j})}{\sum_{\underline{n}\in\mathcal{I}(M,K-1)}(\prod^M_{j=1}{D_j}^{n_j})}\end{align*}"/>
+$$
+\begin{align*}
+E[N\_i(K)] &= \frac{\sum\limits\_{\underline{n}\in\mathcal{I}(M,K)} (n\_i \prod\limits^M\_{j=1} {D\_j}^{n\_j})}{\sum\limits\_{\underline{n}\in\mathcal{I}(M,K)} (\prod\limits^M\_{j=1} {D\_j}^{n\_j})}\\
+E[\hat{R}\_i(K)] &= \frac{\sum\limits\_{\underline{n}\in\mathcal{I}(M,K)} (n\_i \prod\limits^M\_{j=1} {D\_j}^{n\_j})}{\sum\limits_{\underline{n}\in\mathcal{I}(M,K-1)} (\prod\limits^M\_{j=1} {D\_j}^{n\_j})}
+\end{align*}
+$$
 
 The formulas can be applied with the `ExpectedResponseTimePerPassageFCFSFormula` and the `ExpectedNumberOfCustomersFCFSFormula` functions. There are two ways to call these functions.
 
@@ -330,9 +345,14 @@ Out[8] = (2 d1^2 + d1 d2 + d1 d3)/(d1 + d2 + d3)
 ```
 
 #### 4.4 Using the M FCFS and N IS formula
-The following formulas for FCFS stations have been derived for queueing networks with <img src="https://latex.codecogs.com/svg.latex?M" alt="M"/> FCFS stations, <img src="https://latex.codecogs.com/svg.latex?N" alt="N"/> IS stations and <img src="https://latex.codecogs.com/svg.latex?K" alt="K"/> customers; with <img src="https://latex.codecogs.com/svg.latex?D_i" alt="D_i"/> denoting the service demand of station <img src="https://latex.codecogs.com/svg.latex?i" alt="i"/>, <img src="https://latex.codecogs.com/svg.latex?\underline{M}" alt="\underline{M}"/> denoting the indices of the FCFS stations and <img src="https://latex.codecogs.com/svg.latex?\underline{N}" alt= "\underline{N}"/> denoting the indices of the IS stations:
+The following formulas for FCFS stations have been derived for queueing networks with $M$ FCFS stations, $N$ IS stations and $K$ customers; with $D_i$ denoting the service demand of station $i$, $\underline{M}$ denoting the indices of the FCFS stations and $\underline{N}$ denoting the indices of the IS stations:
 
-<img src="https://latex.codecogs.com/svg.latex?\begin{align*}E[N_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K)}(K!\cdot&space;n_i\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}{\sum_{\underline{n}\in\mathcal{I}(M,K)}(K!\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}\\E[\hat{R}_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K-1)}((K-1)!\cdot(n_i&plus;1)D_i\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}{\sum_{\underline{n}\in\mathcal{I}(M,K-1)}((K-1)!\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}\end{align*}" alt="\begin{align*}E[N_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K)}(K!\cdot&space;n_i\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}{\sum_{\underline{n}\in\mathcal{I}(M,K)}(K!\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}\\E[\hat{R}_i(K)]&=\frac{\sum_{\underline{n}\in\mathcal{I}(M,K-1)}((K-1)!\cdot(n_i&plus;1)D_i\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}{\sum_{\underline{n}\in\mathcal{I}(M,K-1)}((K-1)!\cdot\prod_{j\in\underline{M}}({D_j}^{n_j})\cdot\prod_{j\in\underline{N}}(\frac{{D_j}^{n_j}}{n_j!}))}\end{align*}"/>
+$$
+\begin{align*}
+E[N\_i(K)] &= \frac{\sum\limits\_{\underline{n}\in\mathcal{I}(M,K)} (K! \cdot n\_i \cdot \prod\limits\_{j\in\underline{M}} ({D\_j}^{n\_j}) \cdot \prod\limits\_{j\in\underline{N}} (\frac{{D\_j}^{n\_j}}{n\_j!}))}{\sum\limits\_{\underline{n}\in\mathcal{I}(M,K)} (K! \cdot \prod\limits\_{j\in\underline{M}} ({D\_j}^{n\_j}) \cdot \prod\limits\_{j\in\underline{N}} (\frac{{D\_j}^{n\_j}}{n\_j!}))}\\
+E[\hat{R}\_i(K)] &= \frac{\sum\limits\_{\underline{n}\in\mathcal{I}(M,K-1)} ((K - 1)! \cdot (n\_i + 1) D\_i \cdot \prod\limits\_{j\in\underline{M}} ({D\_j}^{n\_j}) \cdot \prod\limits\_{j\in\underline{N}} (\frac{{D\_j}^{n\_j}}{n\_j!}))}{\sum\limits\_{\underline{n}\in\mathcal{I}(M,K-1)} ((K - 1)! \cdot \prod\limits\_{j\in\underline{M}} ({D\_j}^{n\_j}) \cdot \prod\limits\_{j\in\underline{N}} (\frac{{D\_j}^{n\_j}}{n\_j!}))}
+\end{align*}
+$$
 
 The formulas can be applied with the `ExpectedResponseTimePerPassageFCFSAndISFormula` and the `ExpectedNumberOfCustomersFCFSAndISFormula` functions. There are two ways to call these functions.
 
